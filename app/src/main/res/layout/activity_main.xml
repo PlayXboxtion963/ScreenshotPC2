@@ -62,31 +62,31 @@
         android:id="@+id/Fullscreen"
         android:layout_width="300dp"
         android:layout_height="70dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
         android:adjustViewBounds="true"
         android:alpha="0.6"
         android:background="#00FF0000"
         android:cropToPadding="true"
         android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view"
         app:srcCompat="@drawable/dayquanpin" />
 
     <ImageButton
         android:id="@+id/Topcap"
         android:layout_width="300dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
         android:alpha="0.6"
         android:background="#00FF0000"
         android:cropToPadding="true"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view"
         app:srcCompat="@drawable/daydingbu" />
 
     <Button
