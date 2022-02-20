@@ -1,0 +1,18 @@
+<resources>
+
+    <style name="Widget.ScreenshotPC.AppWidget.Container" parent="android:Widget">
+        <item name="android:id">@android:id/background</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+
+    </style>
+
+    <style name="Widget.ScreenshotPC.AppWidget.InnerView" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+
+    </style>
+
+    <!--toolbat mean的字体颜色和大小-->
+    <!-- 设置Toolbar标题字体的颜色大小 -->
+
+</resources>

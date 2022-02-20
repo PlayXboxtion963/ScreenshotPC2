@@ -1,0 +1,63 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.playxboxtion233.screenshotpc"
+        minSdk 22
+        targetSdk 32
+        versionCode 4
+        versionName "LTSC202202.1"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'gdut.bsx:share2:0.9.3'
+    implementation 'com.arialyy.aria:core:3.8.15'
+    annotationProcessor 'com.arialyy.aria:compiler:3.8.15'
+    implementation 'com.arialyy.aria:sftpComponent:3.8.15'
+    implementation 'com.arialyy.aria:core:3.8.12'
+    annotationProcessor 'com.arialyy.aria:compiler:3.8.12'
+    implementation 'com.arialyy.aria:ftpComponent:3.8.12'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'  //图片加载库
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'jp.wasabeef:glide-transformations:4.3.0'
+    // If you want to use the GPU Filters
+    implementation 'jp.co.cyberagent.android:gpuimage:2.1.0'
+    //noinspection GradleCompatible
+    implementation'com.android.support:support-compat:28.0.0'
+    implementation "jp.wasabeef:glide-transformations:3.0.1"
+    implementation 'com.github.mmin18:realtimeblurview:1.2.1'
+    implementation 'com.bm.photoview:library:1.4.1'
+    implementation 'io.alterac.blurkit:blurkit:1.1.0'
+    implementation 'jp.wasabeef:blurry:4.0.1'
+}

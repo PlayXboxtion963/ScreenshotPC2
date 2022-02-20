@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:android="http://schemas.android.com/apk/res/android">
+    <paths>
+        <!--<root-path
+            name="sd_photos"
+            path="" />存储卡根目录(root-path与external-path 只写其一即可)-->
+        <external-path
+            name="external_paths"
+            path="" /><!--存储卡根目录下的子目录(path不填写为泛指向, 如果想指向具体子目录, 例如:  path="DCIM/" 即可)-->
+        <files-path
+            name="imfit_paths"
+            path=""/><!--Android/data/应用根目录/files/下的子目录-->
+    </paths>
+</resources>
