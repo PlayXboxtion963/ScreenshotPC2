@@ -82,7 +82,7 @@
         android:alpha="0.6"
         android:background="#00FF0000"
         android:cropToPadding="true"
-        android:scaleType="fitXY"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="@+id/view"
@@ -126,7 +126,7 @@
         android:textColor="@color/white"
         android:textColorHighlight="@color/white"
         android:textColorHint="@color/white"
-        android:textColorLink="@color/white"
+        android:textColorLink="@color/back"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView2"
         app:layout_constraintHorizontal_bias="0.109"
@@ -202,17 +202,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
+        android:alpha="0.6"
         android:format12Hour="hh:mm:ss"
         android:format24Hour="HH:mm:ss"
         android:gravity="center"
         android:textColor="@color/back"
         android:textSize="60sp"
-        android:alpha="0.6"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        tools:visibility="gone" />
 
     <ImageButton
         android:id="@+id/storebtn"
