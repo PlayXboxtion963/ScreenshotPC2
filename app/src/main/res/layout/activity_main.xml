@@ -6,6 +6,7 @@
     android:id="@+id/mainview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:alpha="0.8"
     tools:context="com.playxboxtion233.screenshotpc.MainActivity">
 
     <ImageView
@@ -34,174 +35,164 @@
         />
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="341dp"
-        android:layout_height="242dp"
-        android:layout_marginTop="20dp"
-        android:scaleType="centerInside"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:srcCompat="@drawable/daymoren"
-        tools:srcCompat="@drawable/daymoren"
-        tools:visibility="visible" />
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="319dp"
-        android:layout_height="190dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.53"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <ImageButton
-        android:id="@+id/Fullscreen"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="16dp"
-        android:adjustViewBounds="true"
-        android:alpha="0.6"
-        android:background="#00FF0000"
-        android:cropToPadding="true"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="@+id/view"
-        app:layout_constraintHorizontal_bias="0.526"
-        app:layout_constraintStart_toStartOf="@+id/view"
-        app:srcCompat="@drawable/dayquanpin" />
-
-    <ImageButton
-        android:id="@+id/Topcap"
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="16dp"
-        android:alpha="0.6"
-        android:background="#00FF0000"
-        android:cropToPadding="true"
-        android:scaleType="centerInside"
-        app:layout_constraintEnd_toEndOf="@+id/view"
-        app:layout_constraintHorizontal_bias="0.526"
-        app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view"
-        app:srcCompat="@drawable/daydingbu" />
-
-    <Button
-        android:id="@+id/debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="516dp"
-        android:text="debug"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="345dp"
-        android:layout_height="146dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/inputarea"
+        android:layout_width="344dp"
+        android:layout_height="151dp"
         android:layout_marginTop="12dp"
-        android:alpha="0.8"
-        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        app:srcCompat="@drawable/backgrd" />
+        tools:visibility="visible">
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="345dp"
+            android:layout_height="146dp"
+            android:alpha="0.6"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.615"
+            app:srcCompat="@drawable/backgrd" />
 
-    <EditText
-        android:id="@+id/PCIP"
-        android:layout_width="172dp"
-        android:layout_height="47dp"
-        android:ems="10"
-        android:hint="输入电脑IP"
+        <ImageButton
+            android:id="@+id/history"
+            android:layout_width="109dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="10dp"
+            android:alpha="0.8"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            app:srcCompat="@drawable/history" />
 
-        android:inputType="textPersonName"
-        android:textColor="@color/white"
-        android:textColorHighlight="@color/white"
-        android:textColorHint="@color/white"
-        android:textColorLink="@color/back"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.109"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.148" />
+        <ImageButton
+            android:id="@+id/storebtn"
+            android:layout_width="109dp"
+            android:layout_height="53dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="16dp"
+            android:alpha="0.8"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/store" />
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="172dp"
-        android:layout_height="47dp"
-        android:ems="10"
-        android:hint="输入电脑密码"
-        android:inputType="textPersonName"
-        android:textColor="@color/white"
-        android:textColorHighlight="@color/white"
-        android:textColorHint="@color/white"
-        android:textColorLink="@color/white"
+        <EditText
+            android:id="@+id/PCIP"
+            android:layout_width="172dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
 
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.109"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.808" />
+            android:ems="10"
+            android:hint="输入电脑IP"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHighlight="@color/white"
+            android:textColorHint="@color/white"
+            android:textColorLink="@color/back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/screenon"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        android:src="@drawable/offf"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="172dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="28dp"
+            android:ems="10"
+            android:hint="输入电脑密码"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:textColorHighlight="@color/white"
+
+            android:textColorHint="@color/white"
+            android:textColorLink="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/search"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/PCIP"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/PCIP"
+            app:layout_constraintTop_toTopOf="@+id/PCIP"
+            app:srcCompat="@drawable/search"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/passwordstatue"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="12dp"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/password"
+            app:layout_constraintEnd_toEndOf="@+id/password"
+            app:layout_constraintTop_toTopOf="@+id/password"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/password" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonarea"
+        android:layout_width="337dp"
+        android:layout_height="157dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.11"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.929" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageviewarea">
 
-    <ImageButton
-        android:id="@+id/search"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginBottom="12dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/PCIP"
-        app:layout_constraintEnd_toEndOf="@+id/PCIP"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/PCIP"
-        app:layout_constraintTop_toTopOf="@+id/PCIP"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/search"
-        tools:visibility="visible" />
+        <ImageButton
+            android:id="@+id/Fullscreen"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:adjustViewBounds="true"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.486"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/dayquanpin" />
 
-    <ImageButton
-        android:id="@+id/history"
-        android:layout_width="109dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="8dp"
-        android:background="#00FF0000"
-        android:alpha="0.6"
-        android:scaleType="fitCenter"
-        app:layout_constraintStart_toEndOf="@+id/search"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
-        app:srcCompat="@drawable/history" />
+        <ImageButton
+            android:id="@+id/Topcap"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:cropToPadding="true"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.432"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/daydingbu" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextClock
         android:id="@+id/timeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="45dp"
         android:alpha="0.6"
         android:format12Hour="hh:mm:ss"
         android:format24Hour="HH:mm:ss"
@@ -210,81 +201,84 @@
         android:textSize="60sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
-    <ImageButton
-        android:id="@+id/storebtn"
-        android:layout_width="109dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginBottom="12dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        android:alpha="0.6"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/passwordstatue"
-        app:srcCompat="@drawable/store" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/imageviewarea"
+        android:layout_width="341dp"
+        android:layout_height="242dp"
+        android:layout_marginTop="192dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
-    <ImageButton
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="341dp"
+            android:layout_height="242dp"
+            android:scaleType="centerInside"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/daymoren"
+            tools:srcCompat="@drawable/daymoren"
+            tools:visibility="visible" />
 
-        android:id="@+id/share"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.896"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.929"
-        app:srcCompat="@drawable/share" />
+        <ImageButton
+            android:id="@+id/screenon"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            android:src="@drawable/offf"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/deleteph"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        <ImageButton
 
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.896"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.08"
-        app:srcCompat="@drawable/deleteph" />
+            android:id="@+id/share"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/share" />
 
-    <ImageButton
-        android:id="@+id/passwordstatue"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/password"
-        app:layout_constraintEnd_toEndOf="@+id/password"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/password"
-        app:layout_constraintTop_toTopOf="@+id/password"
-        app:layout_constraintVertical_bias="0.39"
-        app:srcCompat="@drawable/password" />
+        <ImageButton
+            android:id="@+id/deleteph"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
 
-    <ImageButton
-        android:id="@+id/wallpaper"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="#00FF0000"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.121"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.081"
-        app:srcCompat="@drawable/wallpapaer" />
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:srcCompat="@drawable/deleteph" />
+
+        <ImageButton
+            android:id="@+id/wallpaper"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView"
+            app:srcCompat="@drawable/wallpapaer" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/imgbackgrdx"
@@ -303,6 +297,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck"
         tools:layout_editor_absoluteX="0dp"
+        tools:visibility="gone" />
+
+    <Button
+        android:id="@+id/debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="516dp"
+        android:text="debug"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
 

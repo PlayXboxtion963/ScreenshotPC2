@@ -15,7 +15,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +30,8 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.transition.TransitionManager;
+import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -46,8 +50,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.palette.graphics.Palette;
 
 import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
@@ -115,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public  static Uri Uritoshare=null;
     private File sharefile=null;
     private boolean historyipstatue;
-
+private  boolean yincanginput;
+private boolean yincangbiaozhi;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +205,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             editor.commit();//提交修改
                         }
                         break;
+                    case R.id.inputstatue:
+                        if(yincanginput==true){
+                            inputstatue(true);
+                            yincanginput=false;
+                            Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
+                            editor.putBoolean("yincanginput",false);
+                        }else{
+                            inputstatue(false);
+                            yincanginput=true;
+                            Toast.makeText(MainActivity.this,"隐藏", Toast.LENGTH_LONG).show();
+                            editor.putBoolean("yincanginput",true);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -228,14 +248,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StrictMode.setThreadPolicy(policy);
 
         SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-
         SharedPreferences.Editor editor = userInfo.edit();
         if(userInfo.contains("zhendong")==false){
                 editor.putBoolean("zhendong",true);
                 editor.commit();
         }//初次启动，如果震动不存在，给个true
         zhendong = userInfo.getBoolean("zhendong", true);
-
+////////////////////////////
 
         if(userInfo.contains("historyipstatue")==false){
             editor.putBoolean("zhendong",true);
@@ -245,7 +264,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(historyipstatue==true){
             gethisrotyip();
         }
-
+        //////////////////////////////
+        if(userInfo.contains("yincanginput")==false){
+            editor.putBoolean("yincanginput",true);
+            editor.commit();
+        }
+        yincanginput=userInfo.getBoolean("yincanginput",true);//true才是显示
+        if(yincanginput==true){
+            inputstatue(true);
+            yincanginput=false;
+            editor.putBoolean("yincanginput",false);
+            editor.commit();
+        }else{
+            inputstatue(false);
+            yincanginput=true;
+            editor.putBoolean("yincanginput",true);
+            editor.commit();
+        }
     }
     public void startup(){
     btn = (ImageButton) findViewById(R.id.Fullscreen);
@@ -433,7 +468,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_connect.setVisibility(View.INVISIBLE);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
                     this.getWindow().setBackgroundDrawable(getDrawable(android.R.color.black));
-
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledshare));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deletepholed));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
@@ -1112,7 +1146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ))
                 .into(imageView);
 
-
+        //createPaletteAsync(BitmapFactory.decodeFile(URIx));
         ImageView imagebackground=findViewById(R.id.imageView3);
         Blurry.with(this)
                 .radius(3)
@@ -1120,6 +1154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .from(BitmapFactory.decodeFile(URIx))
                 .into(imagebackground);
         //不同版本拷贝语句
+
         if (Build.VERSION.SDK_INT > 29) {
             putBitmapToMedia(this, URIx);//下载完成后BITMAP拷贝
         }else{
@@ -1138,7 +1173,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         System.out.println("错误信息");
         System.out.println(ALog.getExceptionString(e));
     }
-    private static final float BITMAP_SCALE = 0.4f;
 
+//    public void createPaletteAsync(Bitmap bitmap) {
+//        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+//            public void onGenerated(Palette p) {
+//                // Use generated instance
+//                if(p != null){
+//                    int titleColor = p.getVibrantColor( 517021728);
+//                    String alphaset="FF"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
+//                    System.out.println(String.format("%08x",titleColor).substring(2));
+//                    ImageView aaaa=findViewById(R.id.imageView4);
+//                    aaaa.setColorFilter((int) Long.parseLong(alphaset, 16), PorterDuff.Mode.SRC_ATOP);
+//                    // ...
+//                }
+//            }
+//        });
+//    }
+    public void inputstatue(boolean inputstatue){
+        if(inputstatue==false) {
+            ConstraintSet set = new ConstraintSet();
+            ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+            set.clone(mlayout);
+            set.connect(R.id.timeText,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,(int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 540, getResources()
+                            .getDisplayMetrics()));
+            set.setVisibility(R.id.inputarea,ConstraintSet.INVISIBLE);
+            set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
+            TransitionManager.beginDelayedTransition(mlayout);
+            set.applyTo(mlayout);
+yincangbiaozhi=true;
+
+        }else {
+            ConstraintSet set = new ConstraintSet();
+            ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+            set.clone(mlayout);
+            set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
+                            .getDisplayMetrics()));
+            set.connect(R.id.timeText,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,(int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 45, getResources()
+                            .getDisplayMetrics()));
+            set.setVisibility(R.id.inputarea, ConstraintSet.VISIBLE);
+            TransitionManager.beginDelayedTransition(mlayout);
+            set.applyTo(mlayout);
+            yincangbiaozhi=false;
+        }
+    }
 }
 
