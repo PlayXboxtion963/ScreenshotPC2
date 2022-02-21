@@ -207,16 +207,17 @@ private boolean yincangbiaozhi;
                         break;
                     case R.id.inputstatue:
                         if(yincanginput==true){
-                            inputstatue(true);
-                            yincanginput=false;
-                            Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("yincanginput",false);
-                        }else{
                             inputstatue(false);
-                            yincanginput=true;
+                            yincanginput=false;
                             Toast.makeText(MainActivity.this,"隐藏", Toast.LENGTH_LONG).show();
+                            editor.putBoolean("yincanginput",false);
+
+                        }else{//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
+                            inputstatue(true);
+                            yincanginput=true;
+                            Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
                             editor.putBoolean("yincanginput",true);
-                        }
+                        }editor.commit();
                         break;
                     default:
                         break;
@@ -272,13 +273,13 @@ private boolean yincangbiaozhi;
         yincanginput=userInfo.getBoolean("yincanginput",true);//true才是显示
         if(yincanginput==true){
             inputstatue(true);
-            yincanginput=false;
-            editor.putBoolean("yincanginput",false);
+            yincanginput=true;
+            editor.putBoolean("yincanginput",true);
             editor.commit();
         }else{
             inputstatue(false);
-            yincanginput=true;
-            editor.putBoolean("yincanginput",true);
+            yincanginput=false;
+            editor.putBoolean("yincanginput",false);
             editor.commit();
         }
     }
@@ -1194,14 +1195,14 @@ private boolean yincangbiaozhi;
             ConstraintSet set = new ConstraintSet();
             ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
             set.clone(mlayout);
-            set.connect(R.id.timeText,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,(int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 540, getResources()
+            set.connect(R.id.timeText,ConstraintSet.TOP,R.id.mainview,ConstraintSet.TOP,(int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
                             .getDisplayMetrics()));
             set.setVisibility(R.id.inputarea,ConstraintSet.INVISIBLE);
             set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
             TransitionManager.beginDelayedTransition(mlayout);
             set.applyTo(mlayout);
-yincangbiaozhi=true;
+
 
         }else {
             ConstraintSet set = new ConstraintSet();
@@ -1216,7 +1217,7 @@ yincangbiaozhi=true;
             set.setVisibility(R.id.inputarea, ConstraintSet.VISIBLE);
             TransitionManager.beginDelayedTransition(mlayout);
             set.applyTo(mlayout);
-            yincangbiaozhi=false;
+
         }
     }
 }
