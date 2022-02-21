@@ -18,6 +18,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.media.TimedText;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.transition.TransitionManager;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean historyipstatue;
 private  boolean yincanginput;
 private boolean yincangbiaozhi;
+private  int isoled=0;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +209,7 @@ private boolean yincangbiaozhi;
                         }
                         break;
                     case R.id.inputstatue:
+                        if(isoled==1){Toast.makeText(MainActivity.this,"OLED下设置无效", Toast.LENGTH_LONG).show();break;}
                         if(yincanginput==true){
                             inputstatue(false);
                             yincanginput=false;
@@ -473,6 +477,20 @@ private boolean yincangbiaozhi;
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deletepholed));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
 
+
+                    isoled=1;
+                    ConstraintSet set = new ConstraintSet();
+                    ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+                    set.clone(mlayout);
+
+                    set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
+                                    .getDisplayMetrics()));
+                    TransitionManager.beginDelayedTransition(mlayout);
+                    set.applyTo(mlayout);
+
+
+
                     btn_passwordstatue.setVisibility(View.INVISIBLE);
                     findViewById(R.id.timeText).setVisibility(View.VISIBLE);
                     mtoolbar.setTitle("");
@@ -520,6 +538,15 @@ private boolean yincangbiaozhi;
                         this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));
                  }else{this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));}
                 findViewById(R.id.timeText).setVisibility(View.INVISIBLE);
+
+                isoled=0;
+                if(yincangbiaozhi==true){ConstraintSet set = new ConstraintSet();
+                       ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+                       set.clone(mlayout);
+                       set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
+                       TransitionManager.beginDelayedTransition(mlayout);
+                       set.applyTo(mlayout);}
+
 
                     mtoolbar.setTitle("懒得截图");
                     timerx.cancel();
@@ -1147,7 +1174,7 @@ private boolean yincangbiaozhi;
                         ))
                 .into(imageView);
 
-        //createPaletteAsync(BitmapFactory.decodeFile(URIx));
+        createPaletteAsync(BitmapFactory.decodeFile(URIx));
         ImageView imagebackground=findViewById(R.id.imageView3);
         Blurry.with(this)
                 .radius(3)
@@ -1175,34 +1202,35 @@ private boolean yincangbiaozhi;
         System.out.println(ALog.getExceptionString(e));
     }
 
-//    public void createPaletteAsync(Bitmap bitmap) {
-//        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-//            public void onGenerated(Palette p) {
-//                // Use generated instance
-//                if(p != null){
-//                    int titleColor = p.getVibrantColor( 517021728);
-//                    String alphaset="FF"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
-//                    System.out.println(String.format("%08x",titleColor).substring(2));
-//                    ImageView aaaa=findViewById(R.id.imageView4);
-//                    aaaa.setColorFilter((int) Long.parseLong(alphaset, 16), PorterDuff.Mode.SRC_ATOP);
-//                    // ...
-//                }
-//            }
-//        });
-//    }
+    public void createPaletteAsync(Bitmap bitmap) {
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            public void onGenerated(Palette p) {
+                // Use generated instance
+                if(p != null){
+                    int titleColor = p.getVibrantColor( -16744224);
+                    System.out.println(titleColor);
+                    String alphaset="FF"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
+                    System.out.println(String.format("%08x",titleColor).substring(2));
+                    TextView mtime=findViewById(R.id.timeText);
+                    mtime.setTextColor((int) Long.parseLong(alphaset, 16));
+                    // ...
+                }
+            }
+        });
+    }
     public void inputstatue(boolean inputstatue){
+        if(isoled==1){
+            return;
+        }
         if(inputstatue==false) {
             ConstraintSet set = new ConstraintSet();
             ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
             set.clone(mlayout);
-            set.connect(R.id.timeText,ConstraintSet.TOP,R.id.mainview,ConstraintSet.TOP,(int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
-                            .getDisplayMetrics()));
             set.setVisibility(R.id.inputarea,ConstraintSet.INVISIBLE);
             set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
             TransitionManager.beginDelayedTransition(mlayout);
             set.applyTo(mlayout);
-
+            yincangbiaozhi=true;
 
         }else {
             ConstraintSet set = new ConstraintSet();
@@ -1211,14 +1239,45 @@ private boolean yincangbiaozhi;
             set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
                             .getDisplayMetrics()));
-            set.connect(R.id.timeText,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,(int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 45, getResources()
-                            .getDisplayMetrics()));
+
             set.setVisibility(R.id.inputarea, ConstraintSet.VISIBLE);
             TransitionManager.beginDelayedTransition(mlayout);
             set.applyTo(mlayout);
-
+            yincangbiaozhi=false;
         }
     }
+
+    private static boolean isExit = false;
+    Handler mHandlerxxx = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandlerxxx.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
+
+
 }
 
