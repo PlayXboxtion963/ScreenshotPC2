@@ -1,9 +1,11 @@
 package com.playxboxtion233.screenshotpc;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +20,10 @@ import android.graphics.ColorMatrix;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.media.AudioManager;
 import android.media.TimedText;
+import android.media.browse.MediaBrowser;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +32,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;
+import android.os.Vibrator;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.method.HideReturnsTransformationMethod;
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int DELAY = 1000;
     private static long lastClickTime = 0;
     private static long lastClickTime1 = 0;
+    private static long lastClickTime2 = 0;
     long lasttime=0;
     private static int jiance=0;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -140,6 +147,7 @@ private  int isoled=0;
         setContentView(R.layout.activity_main);
 
         startup();
+
 //状态栏透明并且文字自适应
         Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -447,7 +455,12 @@ private  int isoled=0;
                 startActivity(intent);
                 break;
             case R.id.screenon:
-
+                currentTime = System.currentTimeMillis();
+                if (currentTime-lastClickTime2>1000){
+                    lastClickTime2 = currentTime;
+                }else{
+                    return;
+                }
                 buttoncounter++;
                 ImageButton lbtitle=(ImageButton)findViewById(R.id.screenon);
                 ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
@@ -546,7 +559,6 @@ private  int isoled=0;
                        set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
                        TransitionManager.beginDelayedTransition(mlayout);
                        set.applyTo(mlayout);}
-
 
                     mtoolbar.setTitle("懒得截图");
                     timerx.cancel();
@@ -1210,9 +1222,15 @@ private  int isoled=0;
                     int titleColor = p.getVibrantColor( -16744224);
                     System.out.println(titleColor);
                     String alphaset="FF"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
+                    String alphaset1="50"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
                     System.out.println(String.format("%08x",titleColor).substring(2));
                     TextView mtime=findViewById(R.id.timeText);
                     mtime.setTextColor((int) Long.parseLong(alphaset, 16));
+//                    ImageButton mbutton=findViewById(R.id.Fullscreen);
+//                    ImageButton mbutton2=findViewById(R.id.Topcap);
+//
+//                    if(isoled==1){mbutton.setColorFilter((int) Long.parseLong(alphaset1, 16),PorterDuff.Mode.SRC_ATOP);
+//                    mbutton2.setColorFilter((int) Long.parseLong(alphaset1, 16),PorterDuff.Mode.SRC_ATOP);}
                     // ...
                 }
             }
@@ -1261,6 +1279,28 @@ private  int isoled=0;
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             exit();
             return false;
+        }
+        else if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK||keyCode ==KeyEvent.KEYCODE_ENTER||keyCode ==KeyEvent.KEYCODE_SPACE) {
+            if (check() == 1)
+                return false;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime-lastClickTime1>2000){
+                lastClickTime1 = currentTime;
+            }else{
+                return false;
+            }
+            shenqingtupian();
+            Vibrator mVivrator= (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            long[] pattern = {200, 100};
+            mVivrator.vibrate(pattern,-1);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    savephotobyaria();
+                }
+            }, 1000);
+
         }
         return super.onKeyDown(keyCode, event);
     }
