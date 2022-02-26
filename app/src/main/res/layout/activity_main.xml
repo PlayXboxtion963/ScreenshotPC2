@@ -6,7 +6,7 @@
     android:id="@+id/mainview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.8"
+    android:alpha="1"
     tools:context="com.playxboxtion233.screenshotpc.MainActivity">
 
     <ImageView
