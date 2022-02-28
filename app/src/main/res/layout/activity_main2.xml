@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context="com.playxboxtion233.screenshotpc.MainActivity2">
 
+    <TextView
+        android:id="@+id/dmaw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="60sp"
+        app:layout_constraintBottom_toTopOf="@+id/IPtext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.602"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="234dp"

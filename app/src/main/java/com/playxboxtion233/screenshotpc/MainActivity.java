@@ -35,9 +35,12 @@ import android.os.StrictMode;
 import android.os.Vibrator;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean displayx=false;
     public static final int DELAY = 1000;
     private static long lastClickTime = 0;
-    private static long lastClickTime1 = 0;
+    public static long lastClickTime1 = 0;
     private static long lastClickTime2 = 0;
     long lasttime=0;
     private static int jiance=0;
@@ -126,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             "android.permission.WRITE_EXTERNAL_STORAGE"};
     private final String PREFS_NAME = "user";
     private boolean zhendong;
+    private String Mac;
     Timer  timerx=new Timer();
     public  static Uri Uritoshare=null;
     private File sharefile=null;
@@ -133,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 private  boolean yincanginput;
 private boolean yincangbiaozhi;
 private  int isoled=0;
+    Bluetoothheart mblue;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +163,7 @@ private  int isoled=0;
             window.setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
 
-
+        TextView mtext=findViewById(R.id.heartrate);
         //toolbar初始化
 
         Toolbar mtoolbar=(Toolbar)findViewById(R.id.my_toolbar);
@@ -230,6 +235,32 @@ private  int isoled=0;
                             Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
                             editor.putBoolean("yincanginput",true);
                         }editor.commit();
+                    case R.id.miband:
+                        final EditText inputServer = new EditText(MainActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("输入MAC地址").setIcon(R.drawable.newlogo).setView(inputServer)
+                                .setNegativeButton("Cancel", null);
+                        inputServer.setText(userInfo.getString("MAC","FB:35:A2:DE:F5:49"));
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Mac=inputServer.getText().toString();
+                                editor.putString("MAC",Mac);
+                                editor.commit();
+                                mblue.setContext(MainActivity.this);
+                                mblue.setMac(Mac);
+                                mblue.setTextview(mtext);
+                                mblue.startble();
+                            }
+                        });
+                        builder.show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.exitx:
+                        exit();
+                        System.exit(0);
                         break;
                     default:
                         break;
@@ -262,6 +293,12 @@ private  int isoled=0;
 
         SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();
+        if(userInfo.contains("MAC")==false){
+            editor.putString("MAC","FB:35:A2:DE:F5:49");
+            editor.commit();
+        }
+        Mac=userInfo.getString("MAC","FB:35:A2:DE:F5:49");
+
         if(userInfo.contains("zhendong")==false){
                 editor.putBoolean("zhendong",true);
                 editor.commit();
@@ -336,6 +373,48 @@ private  int isoled=0;
     btn_gif.setOnTouchListener(this);
     btn_history.setOnClickListener(this);
     btn_history.setOnTouchListener(this);
+        mblue=new Bluetoothheart();
+        TextView et = (TextView) findViewById(R.id.heartrate);
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                System.out.println("变化了");
+                if(Integer.valueOf(mblue.getheartrate())>=120){
+                    if (check() == 1)
+                        return;
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime-lastClickTime1>20000){
+                        lastClickTime1 = currentTime;
+                    }else{
+                        return;
+                    }
+                    shenqingtupian();
+                    Vibrator mVivrator= (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    long[] pattern = {200, 100};
+                    mVivrator.vibrate(pattern,-1);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            savephotobyaria();
+                        }
+                    }, 1000);
+
+                }
+                }
+        };
+        et.addTextChangedListener(watcher);
 }//按钮初始化
 
 
@@ -991,7 +1070,7 @@ private  int isoled=0;
         Matcher m = p.matcher(string);
         boolean b = m.matches();
         if (b == false) {
-            Toast.makeText(this, "IP格式输入错误", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "IP格式输入错误", Toast.LENGTH_LONG).show();
             return 1;
         }
         return 0;

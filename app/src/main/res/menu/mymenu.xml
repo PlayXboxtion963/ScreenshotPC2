@@ -5,6 +5,7 @@
     <item android:id="@+id/zhendong" android:title="震动开关切换"/>
     <item android:id="@+id/autupatch" android:title="自动填充开关切换"/>
     <item android:id="@+id/inputstatue" android:title="输入区域状态"/>
+    <item android:id="@+id/miband" android:title="小米手环心率截图"/>
     <item android:id="@+id/menu_login" android:title="关于"/>
-
+    <item android:id="@+id/exitx" android:title="退出"/>
 </menu>

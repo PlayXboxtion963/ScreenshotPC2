@@ -6,21 +6,8 @@
     android:id="@+id/mainview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="1"
+    android:alpha="6"
     tools:context="com.playxboxtion233.screenshotpc.MainActivity">
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/my_toolbar"
-        app:layout_constraintVertical_bias="0.502"
-        tools:layout_editor_absoluteX="-450dp"
-        tools:srcCompat="@tools:sample/avatars"
-        tools:visibility="invisible" />
 
 
     <androidx.appcompat.widget.Toolbar
@@ -36,6 +23,44 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
         tools:layout_editor_absoluteX="1dp" />
+
+    <TextView
+        android:id="@+id/heartrate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="心率"
+        android:textColor="?attr/editTextColor"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_toolbar" />
+
+    <Button
+        android:id="@+id/debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="716dp"
+        android:text="debug"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:scaleType="centerCrop"
+        tools:layout_editor_absoluteX="36dp"
+        tools:layout_editor_absoluteY="268dp"
+        tools:srcCompat="@tools:sample/avatars"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/inputarea"
@@ -280,6 +305,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageView"
             app:srcCompat="@drawable/wallpapaer" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
@@ -299,19 +325,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck"
         tools:layout_editor_absoluteX="0dp"
-        tools:visibility="gone" />
-
-    <Button
-        android:id="@+id/debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="516dp"
-        android:text="debug"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
 
