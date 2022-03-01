@@ -99,6 +99,8 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.Mac;
+
 import gdut.bsx.share2.Share2;
 import gdut.bsx.share2.ShareContentType;
 import jp.wasabeef.blurry.Blurry;
@@ -152,8 +154,6 @@ private  int isoled=0;
         setContentView(R.layout.activity_main);
 
         startup();
-
-//状态栏透明并且文字自适应
         Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -235,29 +235,35 @@ private  int isoled=0;
                             Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
                             editor.putBoolean("yincanginput",true);
                         }editor.commit();
+                        break;
                     case R.id.miband:
+
+                        ImageView mimageview=findViewById(R.id.imageView4);
+                        mimageview.setVisibility(View.VISIBLE);
+
                         final EditText inputServer = new EditText(MainActivity.this);
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("输入MAC地址").setIcon(R.drawable.newlogo).setView(inputServer)
-                                .setNegativeButton("Cancel", null);
+                        builder.setTitle("输入MAC地址,手环设置-关于").setIcon(R.drawable.newlogo).setView(inputServer)
+                                .setNegativeButton("取消", null);
                         inputServer.setText(userInfo.getString("MAC","FB:35:A2:DE:F5:49"));
-                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton("连接", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 Mac=inputServer.getText().toString();
                                 editor.putString("MAC",Mac);
                                 editor.commit();
-                                mblue.setContext(MainActivity.this);
-                                mblue.setMac(Mac);
-                                mblue.setTextview(mtext);
-                                mblue.startble();
+                                    mblue.setContext(MainActivity.this);
+                                    mblue.setMac(Mac);
+                                    mblue.setTextview(mtext);
+                                    mblue.startble();
+
                             }
                         });
                         builder.show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔20秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        break;
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                         break;
                     case R.id.exitx:
                         exit();
                         System.exit(0);
@@ -297,7 +303,7 @@ private  int isoled=0;
             editor.putString("MAC","FB:35:A2:DE:F5:49");
             editor.commit();
         }
-        Mac=userInfo.getString("MAC","FB:35:A2:DE:F5:49");
+       Mac=userInfo.getString("MAC","FB:35:A2:DE:F5:49");
 
         if(userInfo.contains("zhendong")==false){
                 editor.putBoolean("zhendong",true);
@@ -388,13 +394,11 @@ private  int isoled=0;
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                System.out.println("变化了");
                 if(Integer.valueOf(mblue.getheartrate())>=120){
                     if (check() == 1)
                         return;
                     long currentTime = System.currentTimeMillis();
-                    if (currentTime-lastClickTime1>20000){
+                    if (currentTime-lastClickTime1>10000){
                         lastClickTime1 = currentTime;
                     }else{
                         return;
@@ -456,6 +460,7 @@ private  int isoled=0;
         ImageView imagebackg=findViewById(R.id.imgbackgrdx);
         ImageView ImageViewxx=(ImageView)findViewById(R.id.imageView);
         Toolbar mtoolbarx=(Toolbar)findViewById(R.id.my_toolbar);
+        ImageView heartback=findViewById(R.id.imageView4);
         switch (view.getId()) {
 
             case R.id.Fullscreen://全屏按钮
@@ -568,7 +573,7 @@ private  int isoled=0;
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledshare));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deletepholed));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
-
+                    heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledheart));
 
                     isoled=1;
                     ConstraintSet set = new ConstraintSet();
@@ -626,6 +631,7 @@ private  int isoled=0;
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deleteph));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.share));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wallpapaer));
+                heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.heartrate));
                 if(this.getApplicationContext().getResources().getConfiguration().uiMode == 0x21){
                         this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));
                  }else{this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));}

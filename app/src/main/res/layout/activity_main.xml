@@ -24,20 +24,6 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
         tools:layout_editor_absoluteX="1dp" />
 
-    <TextView
-        android:id="@+id/heartrate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="心率"
-        android:textColor="?attr/editTextColor"
-        android:textSize="20sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/my_toolbar" />
-
     <Button
         android:id="@+id/debug"
         android:layout_width="wrap_content"
@@ -305,6 +291,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageView"
             app:srcCompat="@drawable/wallpapaer" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="fitXY"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/heartrate" />
+
+        <TextView
+            android:id="@+id/heartrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="26dp"
+            android:textColor="?attr/editTextColor"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/imageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
