@@ -170,6 +170,7 @@ private  int isoled=0;
         mtoolbar.setTitle(R.string.app_name);
         mtoolbar.inflateMenu(R.menu.mymenu);
         mtoolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 String msg = "";
@@ -239,7 +240,7 @@ private  int isoled=0;
                     case R.id.miband:
 
                         ImageView mimageview=findViewById(R.id.imageView4);
-                        mimageview.setVisibility(View.VISIBLE);
+
 
                         final EditText inputServer = new EditText(MainActivity.this);
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -253,6 +254,7 @@ private  int isoled=0;
                                 editor.commit();
                                     mblue.setContext(MainActivity.this);
                                     mblue.setMac(Mac);
+                                    mimageview.setVisibility(View.VISIBLE);
                                     mblue.setTextview(mtext);
                                     mblue.startble();
 
@@ -357,6 +359,9 @@ private  int isoled=0;
     ImageViewxxx.setOnClickListener(this);
     photoView.setOnClickListener(this);
     ImageView suolue=(ImageView)findViewById(R.id.imageView);
+    ImageButton editbutton=findViewById(R.id.photoedit);
+    editbutton.setOnClickListener(this);
+    editbutton.setOnTouchListener(this);
     findViewById(R.id.timeText).setVisibility(View.INVISIBLE);
     suolue.setOnClickListener(this);
     btn_wallpaper.setOnClickListener(this);
@@ -655,6 +660,15 @@ private  int isoled=0;
                 findViewById(R.id.imageView3).setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.photoedit:
+                if(Uritoshare!=null){
+                    Intent editIntent = new Intent(Intent.ACTION_EDIT);
+                    editIntent.setDataAndType(Uritoshare, "image/*");
+                    editIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(Intent.createChooser(editIntent, null));
+                }
+                else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
+                break;
             case R.id.share:
                 if(Uritoshare!=null){
                     share(Uritoshare);}
@@ -874,6 +888,7 @@ private  int isoled=0;
             case R.id.screenon:
             case R.id.storebtn:
             case R.id.wallpaper:
+            case R.id.photoedit:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
 
