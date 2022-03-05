@@ -1,11 +1,9 @@
 package com.playxboxtion233.screenshotpc;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,13 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
-import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.media.AudioManager;
-import android.media.TimedText;
-import android.media.browse.MediaBrowser;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,11 +32,9 @@ import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -54,7 +44,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,8 +56,10 @@ import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 
 import com.arialyy.annotations.Download;
+import com.arialyy.annotations.DownloadGroup;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.common.FtpOption;
+import com.arialyy.aria.core.task.DownloadGroupTask;
 import com.arialyy.aria.core.task.DownloadTask;
 import com.arialyy.aria.util.ALog;
 import com.bm.library.Info;
@@ -99,8 +90,6 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.crypto.Mac;
-
 import gdut.bsx.share2.Share2;
 import gdut.bsx.share2.ShareContentType;
 import jp.wasabeef.blurry.Blurry;
@@ -113,20 +102,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton btn_shotwindow;
     private ImageButton btn_history;
     private ImageButton btn_gif;
-    private Button btn_debug;
-    private ImageButton btn_passwordstatue;
     private DatagramSocket socket = null;
     private InetAddress serverAddress = null;
     private ProgressDialog progressDialog;
-    private boolean displayx=false;
-    public static final int DELAY = 1000;
     private static long lastClickTime = 0;
     public static long lastClickTime1 = 0;
     private static long lastClickTime2 = 0;
     long lasttime=0;
-    private static int jiance=0;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
+    private static final String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"};
     private final String PREFS_NAME = "user";
@@ -136,10 +120,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public  static Uri Uritoshare=null;
     private File sharefile=null;
     private boolean historyipstatue;
-private  boolean yincanginput;
-private boolean yincangbiaozhi;
-private  int isoled=0;
+    private  boolean yincanginput;
+    private boolean yincangbiaozhi;
+    private  int isoled=0;
     Bluetoothheart mblue;
+    public boolean canbeclick=true;
+    @SuppressLint("NonConstantResourceId")
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,131 +152,115 @@ private  int isoled=0;
         TextView mtext=findViewById(R.id.heartrate);
         //toolbar初始化
 
-        Toolbar mtoolbar=(Toolbar)findViewById(R.id.my_toolbar);
+        Toolbar mtoolbar= findViewById(R.id.my_toolbar);
         mtoolbar.setTitle(R.string.app_name);
         mtoolbar.inflateMenu(R.menu.mymenu);
-        mtoolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                String msg = "";
-                SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_login:
-                        Toast.makeText(MainActivity.this," v4.8 感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
-                        break;
-                    case R.id.menu_file:
-                        String path = "%2fPictures%2fPC%2f";
-                        Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("*/*");//想要展示的文件类型
-                        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
-                        startActivityForResult(intent, 1);
-                        break;
-                    case R.id.menu_pc:
-                        Uri urix = Uri.parse("https://gitee.com/dwaedwe12/ScreenshotPC2/releases");
-                        Intent intentx = new Intent(Intent.ACTION_VIEW, urix);
-                        startActivity(intentx);
-                        break;
-                    case R.id.zhendong:
+        mtoolbar.setOnMenuItemClickListener(menuItem -> {
+            String msg = "";
+            SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+            switch (menuItem.getItemId()) {
+                case R.id.menu_login:
+                    Toast.makeText(MainActivity.this," v4.8 感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.menu_file:
+                    String path = "%2fPictures%2fPC%2f";
+                    Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");//想要展示的文件类型
+                    intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
+                    startActivityForResult(intent, 1);
+                    break;
+                case R.id.menu_pc:
+                    Uri urix = Uri.parse("https://gitee.com/dwaedwe12/ScreenshotPC2/releases");
+                    Intent intentx = new Intent(Intent.ACTION_VIEW, urix);
+                    startActivity(intentx);
+                    break;
+                case R.id.zhendong:
 
-                        //得到Editor后，写入需要保存的数据
-                        if(zhendong==false){
-                            zhendong=true;
-                            Toast.makeText(MainActivity.this,"开", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("zhendong",true);
-                            editor.commit();}//提交修改
-                        else if(zhendong=true){
-                            zhendong=false;
-                            Toast.makeText(MainActivity.this,"关", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("zhendong",false);
-                            editor.commit();//提交修改
+                    //得到Editor后，写入需要保存的数据
+                    if(zhendong==false){
+                        zhendong=true;
+                        Toast.makeText(MainActivity.this,"开", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("zhendong",true);
+                        editor.commit();}//提交修改
+                    else if(zhendong=true){
+                        zhendong=false;
+                        Toast.makeText(MainActivity.this,"关", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("zhendong",false);
+                        editor.commit();//提交修改
+                    }
+                    break;
+                case R.id.autupatch:
+                    if(historyipstatue==false){
+                        historyipstatue=true;
+                        Toast.makeText(MainActivity.this,"开", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("historyipstatue",true);
+                        editor.commit();}//提交修改
+                    else if(historyipstatue=true){
+                        historyipstatue=false;
+                        Toast.makeText(MainActivity.this,"关", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("historyipstatue",false);
+                        editor.commit();//提交修改
+                    }
+                    break;
+                case R.id.inputstatue:
+                    if(isoled==1){Toast.makeText(MainActivity.this,"OLED下设置无效", Toast.LENGTH_LONG).show();break;}
+                    if(yincanginput==true){
+                        inputstatue(false);
+                        yincanginput=false;
+                        Toast.makeText(MainActivity.this,"隐藏", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("yincanginput",false);
+
+                    }else{//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
+                        inputstatue(true);
+                        yincanginput=true;
+                        Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("yincanginput",true);
+                    }editor.commit();
+                    break;
+                case R.id.miband:
+
+                    ImageView mimageview=findViewById(R.id.imageView4);
+
+
+                    final EditText inputServer = new EditText(MainActivity.this);
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                    builder1.setTitle("输入MAC地址,手环设置-关于").setIcon(R.drawable.newlogo).setView(inputServer)
+                            .setNegativeButton("取消", null);
+                    inputServer.setText(userInfo.getString("MAC","FB:35:A2:DE:F5:49"));
+                    builder1.setPositiveButton("连接", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Mac=inputServer.getText().toString();
+                            editor.putString("MAC",Mac);
+                            editor.commit();
+                                mblue.setContext(MainActivity.this);
+                                mblue.setMac(Mac);
+                                mimageview.setVisibility(View.VISIBLE);
+                                mblue.setTextview(mtext);
+                                mblue.startble();
+
                         }
-                        break;
-                    case R.id.autupatch:
-                        if(historyipstatue==false){
-                            historyipstatue=true;
-                            Toast.makeText(MainActivity.this,"开", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("historyipstatue",true);
-                            editor.commit();}//提交修改
-                        else if(historyipstatue=true){
-                            historyipstatue=false;
-                            Toast.makeText(MainActivity.this,"关", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("historyipstatue",false);
-                            editor.commit();//提交修改
-                        }
-                        break;
-                    case R.id.inputstatue:
-                        if(isoled==1){Toast.makeText(MainActivity.this,"OLED下设置无效", Toast.LENGTH_LONG).show();break;}
-                        if(yincanginput==true){
-                            inputstatue(false);
-                            yincanginput=false;
-                            Toast.makeText(MainActivity.this,"隐藏", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("yincanginput",false);
-
-                        }else{//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
-                            inputstatue(true);
-                            yincanginput=true;
-                            Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
-                            editor.putBoolean("yincanginput",true);
-                        }editor.commit();
-                        break;
-                    case R.id.miband:
-
-                        ImageView mimageview=findViewById(R.id.imageView4);
-
-
-                        final EditText inputServer = new EditText(MainActivity.this);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("输入MAC地址,手环设置-关于").setIcon(R.drawable.newlogo).setView(inputServer)
-                                .setNegativeButton("取消", null);
-                        inputServer.setText(userInfo.getString("MAC","FB:35:A2:DE:F5:49"));
-                        builder.setPositiveButton("连接", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Mac=inputServer.getText().toString();
-                                editor.putString("MAC",Mac);
-                                editor.commit();
-                                    mblue.setContext(MainActivity.this);
-                                    mblue.setMac(Mac);
-                                    mimageview.setVisibility(View.VISIBLE);
-                                    mblue.setTextview(mtext);
-                                    mblue.startble();
-
-                            }
-                        });
-                        builder.show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                        Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                         break;
-                    case R.id.exitx:
-                        exit();
-                        System.exit(0);
-                        break;
-                    default:
-                        break;
-                }
-                if (!msg.equals("")) {
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                }
-                return true;
+                    });
+                    builder1.show();
+                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
+                     break;
+                case R.id.exitx:
+                    exit();
+                    System.exit(0);
+                    break;
+                default:
+                    break;
             }
+            if (!msg.equals("")) {
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+            return true;
         });
-        //状态栏透明
-//       Window window = this.getWindow();
-//////        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//////        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//////        int option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-//////        window.getDecorView().setSystemUiVisibility(option);
-//////        window.setStatusBarColor(Color.TRANSPARENT);
-//      if (this.getApplicationContext().getResources().getConfiguration().uiMode == 0x11) {
-//            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-//        } else {
-//          window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-//        }
         //密码隐藏
         EditText et_password = (EditText)findViewById(R.id.password);
         et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
@@ -346,9 +316,9 @@ private  int isoled=0;
     btn_shotwindow = (ImageButton) findViewById(R.id.Topcap);
     btn_gif=(ImageButton)findViewById(R.id.search);
     btn_history=(ImageButton)findViewById(R.id.history);
-    btn_debug=(Button)findViewById(R.id.debug);
+    Button btn_debug = (Button) findViewById(R.id.debug);
     ImageButton btn_screenon=(ImageButton)findViewById(R.id.screenon);
-    btn_passwordstatue=(ImageButton)findViewById(R.id.passwordstatue);
+    ImageButton btn_passwordstatue = (ImageButton) findViewById(R.id.passwordstatue);
     ImageButton btn_share=(ImageButton)findViewById(R.id.share);
     ImageButton btn_deleteph=(ImageButton)findViewById(R.id.deleteph);
     ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
@@ -384,6 +354,7 @@ private  int isoled=0;
     btn_gif.setOnTouchListener(this);
     btn_history.setOnClickListener(this);
     btn_history.setOnTouchListener(this);
+
         mblue=new Bluetoothheart();
         TextView et = (TextView) findViewById(R.id.heartrate);
         TextWatcher watcher = new TextWatcher() {
@@ -465,10 +436,14 @@ private  int isoled=0;
         ImageView imagebackg=findViewById(R.id.imgbackgrdx);
         ImageView ImageViewxx=(ImageView)findViewById(R.id.imageView);
         Toolbar mtoolbarx=(Toolbar)findViewById(R.id.my_toolbar);
+        ImageButton editbutton=findViewById(R.id.photoedit);
         ImageView heartback=findViewById(R.id.imageView4);
         switch (view.getId()) {
 
             case R.id.Fullscreen://全屏按钮
+                if(canbeclick==false){
+                    return;
+                }
                 if (check() == 1)
                     break;
                 long currentTime = System.currentTimeMillis();
@@ -494,6 +469,9 @@ private  int isoled=0;
 
 
             case R.id.Topcap://局部按钮
+                if(canbeclick==false){
+                    return;
+                }
                 currentTime = System.currentTimeMillis();
                 if (currentTime-lastClickTime>2000){
                     lastClickTime = currentTime;
@@ -579,6 +557,7 @@ private  int isoled=0;
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deletepholed));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
                     heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledheart));
+                    editbutton.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.olededit));
 
                     isoled=1;
                     ConstraintSet set = new ConstraintSet();
@@ -637,6 +616,7 @@ private  int isoled=0;
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.share));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wallpapaer));
                 heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.heartrate));
+                editbutton.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.photoedit));
                 if(this.getApplicationContext().getResources().getConfiguration().uiMode == 0x21){
                         this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));
                  }else{this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));}
@@ -877,6 +857,8 @@ private  int isoled=0;
 
     //马达
     public boolean onTouch(View v, MotionEvent event) {
+        ImageButton mimagebutton=findViewById(R.id.Fullscreen);
+        ImageButton mimagebutton2=findViewById(R.id.Topcap);
     if(zhendong) {
         switch (v.getId()) {
             case R.id.search:
@@ -891,9 +873,17 @@ private  int isoled=0;
             case R.id.photoedit:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
-
+                    if(v.getId()==R.id.Fullscreen){
+                    mimagebutton.animate().scaleX(1f).scaleY(1f).setDuration(150).start();}
+                    if(v.getId()==R.id.Topcap){
+                        mimagebutton2.animate().scaleX(1f).scaleY(1f).setDuration(150).start();}
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                    if(v.getId()==R.id.Fullscreen){
+                        mimagebutton.animate().scaleX(0.8f).scaleY(0.8f).setDuration(150).start();}
+                    if(v.getId()==R.id.Topcap){
+                        mimagebutton2.animate().scaleX(0.8f).scaleY(0.8f).setDuration(150).start();}
+
                 }
                 break;
             case R.id.passwordstatue:
@@ -1177,6 +1167,7 @@ private  int isoled=0;
 
     //用aira下载ftp到缓存中
     public void savephotobyaria() {
+        canbeclick=false;
         EditText textBOX = (EditText) findViewById(R.id.password);
         String password = textBOX.getText().toString();//murl为文本框
         EditText textBOXip = (EditText) findViewById(R.id.PCIP);
@@ -1185,6 +1176,7 @@ private  int isoled=0;
         FtpOption ftpOption = new FtpOption();
         ftpOption.login("9=n@Yb(thyZ5", password);
         String murl = "ftp://" + ipad + ":23235/tempcap.bmp";//debug阶段，以后可以加上混乱端口
+
         Long mImageTime = System.currentTimeMillis();
         String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(mImageTime));
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
@@ -1304,11 +1296,11 @@ private  int isoled=0;
                 e.printStackTrace();
             }
         }
+        canbeclick=true;
     }
-
-
     //下载失败toast
     @Download.onTaskFail void taskFail(DownloadTask task, Exception e) {
+        canbeclick=true;
         Toast.makeText(this,"下载失败，可能是密码错误或未连接上",Toast.LENGTH_SHORT).show();
         System.out.println("错误信息");
         System.out.println(ALog.getExceptionString(e));

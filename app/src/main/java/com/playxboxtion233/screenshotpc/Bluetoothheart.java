@@ -64,7 +64,7 @@ public class Bluetoothheart extends MainActivity {
                 byte[] Temp=new byte[1];
                 Temp[0]=value[1];
                 heartrate=Arrays.toString(Temp);
-                heartrate=heartrate.substring(1, 3);
+                heartrate = heartrate.replaceAll("\\[|\\]", "");
                 mtext.setText(heartrate);
                 System.out.println(Integer.valueOf(heartrate));
 
