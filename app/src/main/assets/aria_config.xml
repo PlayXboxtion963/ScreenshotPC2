@@ -60,7 +60,7 @@
         <connectTimeOut value="5000"/>
 
         <!--设置IO流读取时间，单位为毫秒，默认20000毫秒，该时间不能少于10000毫秒-->
-        <iOTimeOut value="15000"/>
+        <iOTimeOut value="10000"/>
 
         <!--设置写文件buff大小，该数值大小不能小于2048，数值变小，下载速度会变慢-->
         <buffSize value="8192"/>

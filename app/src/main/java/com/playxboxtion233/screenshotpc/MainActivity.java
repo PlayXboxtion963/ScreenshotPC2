@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private  int isoled=0;
     Bluetoothheart mblue;
     public boolean canbeclick=true;
+    private AlertDialog signlechoose;
     @SuppressLint("NonConstantResourceId")
     @Override
 
@@ -432,6 +433,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        FindOutDevices mfind=new FindOutDevices();
         PhotoView photoView = (PhotoView) findViewById(R.id.img);
         ImageView imagebackg=findViewById(R.id.imgbackgrdx);
         ImageView ImageViewxx=(ImageView)findViewById(R.id.imageView);
@@ -492,26 +494,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 gethisrotyip();
                 break;
             case R.id.search:
+                EditText text1x = (EditText) findViewById(R.id.PCIP);
                 currentTime = System.currentTimeMillis();
                 if (currentTime-lastClickTime>1000){
                     lastClickTime = currentTime;
                 }else{
                     return;
                 }
+
+                mfind.Udpreceive();
+                mfind.startsearch();
                 progressDialog = ProgressDialog.show(this, "", "搜索中");
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
-                        /**
-                         *要执行的操作
-                         */
+
                         progressDialog.dismiss();
+                        String[] array=mfind.getiparray();
+                        String[] namearray=mfind.getNamearray();
+                        mfind.stopsearch();
+                        Looper.prepare();
+                        showSingleAlertDialog(view,array,namearray,text1x);
+                        Looper.loop();
+
+
                     }
                 };
                 Timer timer = new Timer();
-                timer.schedule(task, 990);//3秒后执行TimeTask的run方法
-                EditText text1x = (EditText) findViewById(R.id.PCIP);
-                udpjieshou(text1x);
+                timer.schedule(task, 5000);//3秒后执行TimeTask的run方法
+
+//                udpjieshou(text1x);
                 break;
             case R.id.debug:
                 Intent intent = new Intent();
@@ -821,12 +833,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }//用来做设置壁纸的URIcontent
 
+    public void showSingleAlertDialog(View view,String[] array,String[] namearray,EditText text){
+        String[] items = array;
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("选择计算机,记得改密码框");
+        alertBuilder.setSingleChoiceItems(namearray, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
-    private Bitmap createBitmap(View view) {
-        view.buildDrawingCache();
-        Bitmap bitmap = view.getDrawingCache();
-        return bitmap;
-    }//获取当前view的bitmap用于高斯模糊
+                text.post(new Runnable() {
+                            public void run() {
+                                text.setText(items[i], TextView.BufferType.NORMAL);
+                            }
+                        });
+                Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alertBuilder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                signlechoose.dismiss();
+            }
+        });
+
+        signlechoose = alertBuilder.create();
+        signlechoose.show();
+    }
 
 
 
@@ -908,33 +941,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         new Thread() {
             public void run() {
-                while (true) {
-                    try {
-                        String a = new String("abc");
-                        DatagramSocket dgSocket = null;
-                        int port = 9832;
-                        dgSocket = new DatagramSocket(null);
-                        dgSocket.setReuseAddress(true);
-                        dgSocket.bind(new InetSocketAddress(port));
-                        byte[] by = new byte[1024];
-                        DatagramPacket packet = new DatagramPacket(by, by.length);
-                        dgSocket.receive(packet);
-                        String str = new String(packet.getData(), 0, packet.getLength());
-                        text.post(new Runnable() {
-                            public void run() {
-                                text.setText(str, TextView.BufferType.NORMAL);
-                            }
-                        });
-                        Looper.prepare();
-                            Toast.makeText(MainActivity.this, "搜索到"+str, Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-
-
-                    } catch (IOException e) {
-
-                        e.printStackTrace();
-                    }
-                }
+//                while (true) {
+//                    try {
+//                        String a = new String("abc");
+//                        DatagramSocket dgSocket = null;
+//                        int port = 9832;
+//                        dgSocket = new DatagramSocket(null);
+//                        dgSocket.setReuseAddress(true);
+//                        dgSocket.bind(new InetSocketAddress(port));
+//                        byte[] by = new byte[1024];
+//                        DatagramPacket packet = new DatagramPacket(by, by.length);
+//                        dgSocket.receive(packet);
+//                        String str = new String(packet.getData(), 0, packet.getLength());
+//                        text.post(new Runnable() {
+//                            public void run() {
+//                                text.setText(str, TextView.BufferType.NORMAL);
+//                            }
+//                        });
+//                        Looper.prepare();
+//                            Toast.makeText(MainActivity.this, "搜索到"+str, Toast.LENGTH_SHORT).show();
+//                            Looper.loop();
+//
+//
+//                    } catch (IOException e) {
+//
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         }.start();
 
