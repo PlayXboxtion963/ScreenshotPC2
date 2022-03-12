@@ -202,7 +202,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextClock
-        android:id="@+id/timeText"
+        android:id="@+id/timeTextx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"

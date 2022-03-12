@@ -25,7 +25,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.Vibrator;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -56,10 +55,8 @@ import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 
 import com.arialyy.annotations.Download;
-import com.arialyy.annotations.DownloadGroup;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.common.FtpOption;
-import com.arialyy.aria.core.task.DownloadGroupTask;
 import com.arialyy.aria.core.task.DownloadTask;
 import com.arialyy.aria.util.ALog;
 import com.bm.library.Info;
@@ -165,13 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this," v4.8 感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.menu_file:
-                    String path = "%2fPictures%2fPC%2f";
-                    Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("*/*");//想要展示的文件类型
-                    intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
-                    startActivityForResult(intent, 1);
+                    openfileexploer();
                     break;
                 case R.id.menu_pc:
                     Uri urix = Uri.parse("https://gitee.com/dwaedwe12/ScreenshotPC2/releases");
@@ -333,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton editbutton=findViewById(R.id.photoedit);
     editbutton.setOnClickListener(this);
     editbutton.setOnTouchListener(this);
-    findViewById(R.id.timeText).setVisibility(View.INVISIBLE);
+    findViewById(R.id.timeTextx).setVisibility(View.INVISIBLE);
     suolue.setOnClickListener(this);
     btn_wallpaper.setOnClickListener(this);
     btn_wallpaper.setOnTouchListener(this);
@@ -398,18 +389,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         et.addTextChangedListener(watcher);
 }//按钮初始化
 
+    public void openfileexploer(){
+//        String path = "%2fPictures%2fPC%2f";
+//
+//        Uri uri = Uri.parse("content://com.android.providers.media.documents/document/primary:" + path);
+//        Intent intent = new Intent(Intent.ACTION_PICK);//意图：文件浏览器
+//        intent.setType("image/png");//无类型限制
+//        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);//关键！多选参数
+//        //intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
+//        startActivityForResult(intent, 1);
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setType("vnd.android.cursor.dir/image");
+//        startActivity(intent);
 
+        openPathPhoto("/storage/emulated/0/Pictures/PC");
+
+    }
+
+    //这里path就是传的需要浏览指定的文件夹的路径
+    public void openPathPhoto(String path) {
+        File file = new File(path);
+        if (file.exists() && file.listFiles().length > 0) {
+            //  String path= getSDPath() + "/Pictures/PDF原图";
+            new PictureScanner(this, path);
+        } else {
+            Toast.makeText(this,"没有相关目录",Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     //分享
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            Uri uri = data.getData();
-            share(uri);
+        if (resultCode == Activity.RESULT_OK) {
+            if (data.getData() != null) {
+                //单次点击未使用多选的情况
+                try {
+                    Uri uri = data.getData();
+                    //TODO 对获得的uri做解析，这部分在另一篇文章讲解
+                    //String path = getPath(getApplicationContext(),uri);
+                    //TODO 对转换得到的真实路径path做相关处理
+                    share(uri);
+                    System.out.println(uri);
+                } catch (Exception e) { }
+            }
 
-        }
-    }
+    }}
+
+
+
     public void share(Uri uri) {
 
         //三方库分享调用
@@ -496,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.search:
                 EditText text1x = (EditText) findViewById(R.id.PCIP);
                 currentTime = System.currentTimeMillis();
-                if (currentTime-lastClickTime>1000){
+                if (currentTime-lastClickTime>9000){
                     lastClickTime = currentTime;
                 }else{
                     return;
@@ -585,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                     btn_passwordstatue.setVisibility(View.INVISIBLE);
-                    findViewById(R.id.timeText).setVisibility(View.VISIBLE);
+                    findViewById(R.id.timeTextx).setVisibility(View.VISIBLE);
                     mtoolbar.setTitle("");
                     text1.setVisibility(View.INVISIBLE);
                     text2.setVisibility(View.INVISIBLE);
@@ -632,7 +662,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(this.getApplicationContext().getResources().getConfiguration().uiMode == 0x21){
                         this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));
                  }else{this.getWindow().setBackgroundDrawable(getDrawable(R.color.luse));}
-                findViewById(R.id.timeText).setVisibility(View.INVISIBLE);
+                findViewById(R.id.timeTextx).setVisibility(View.INVISIBLE);
 
                 isoled=0;
                 if(yincangbiaozhi==true){ConstraintSet set = new ConstraintSet();
@@ -1349,7 +1379,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String alphaset="FF"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
                     String alphaset1="50"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
                     System.out.println(String.format("%08x",titleColor).substring(2));
-                    TextView mtime=findViewById(R.id.timeText);
+                    TextView mtime=findViewById(R.id.timeTextx);
                     mtime.setTextColor((int) Long.parseLong(alphaset, 16));
 //                    ImageButton mbutton=findViewById(R.id.Fullscreen);
 //                    ImageButton mbutton2=findViewById(R.id.Topcap);

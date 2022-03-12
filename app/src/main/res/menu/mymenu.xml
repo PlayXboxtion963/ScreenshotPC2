@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_file" android:title="打开图片目录选择并分享" />
-    <item android:id="@+id/menu_pc" android:title="PC端下载链接"/>
+    <item android:id="@+id/menu_file" android:title="打开图片目录" />
+    <item android:id="@+id/menu_pc" android:title="PC端下载链接/更新"/>
     <item android:id="@+id/zhendong" android:title="震动开关切换"/>
     <item android:id="@+id/autupatch" android:title="自动填充开关切换"/>
     <item android:id="@+id/inputstatue" android:title="输入区域状态"/>
