@@ -15,7 +15,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -122,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private  int isoled=0;
     Bluetoothheart mblue;
     public boolean canbeclick=true;
+    private int ismute=0;
+    private int ispause=0;
     private AlertDialog signlechoose;
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this," v4.8 感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.menu_file:
-                    openfileexploer();
+                    openPathPhoto("/storage/emulated/0/Pictures/PC");
                     break;
                 case R.id.menu_pc:
                     Uri urix = Uri.parse("https://gitee.com/dwaedwe12/ScreenshotPC2/releases");
@@ -314,6 +318,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton btn_share=(ImageButton)findViewById(R.id.share);
     ImageButton btn_deleteph=(ImageButton)findViewById(R.id.deleteph);
     ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
+    ImageButton volumeupbtn=findViewById(R.id.volumeup);
+    volumeupbtn.setOnClickListener(this);
+    ImageButton volumedownbtn=findViewById(R.id.volumedown);
+    volumedownbtn.setOnTouchListener(this);
+    volumeupbtn.setOnTouchListener(this);
+    ImageButton presound=findViewById(R.id.presound);
+    ImageButton nextsound=findViewById(R.id.nextsound);
+    ImageButton pause=findViewById(R.id.pause);
+    presound.setOnTouchListener(this);
+    presound.setOnClickListener(this);
+    nextsound.setOnTouchListener(this);
+    nextsound.setOnClickListener(this);
+    pause.setOnTouchListener(this);
+    pause.setOnClickListener(this);
+    ImageButton mutebtn=findViewById(R.id.mute);
+    mutebtn.setOnClickListener(this);
+    mutebtn.setOnTouchListener(this);
+    volumedownbtn.setOnClickListener(this);
     PhotoView photoView = (PhotoView) findViewById(R.id.img);
     photoView.setVisibility(View.INVISIBLE);
     ImageView ImageViewxxx=findViewById(R.id.imgbackgrdx);
@@ -387,25 +409,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
         };
         et.addTextChangedListener(watcher);
-}//按钮初始化
+        }//心率文本框变化监测
 
-    public void openfileexploer(){
-//        String path = "%2fPictures%2fPC%2f";
-//
-//        Uri uri = Uri.parse("content://com.android.providers.media.documents/document/primary:" + path);
-//        Intent intent = new Intent(Intent.ACTION_PICK);//意图：文件浏览器
-//        intent.setType("image/png");//无类型限制
-//        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);//关键！多选参数
-//        //intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
-//        startActivityForResult(intent, 1);
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setType("vnd.android.cursor.dir/image");
-//        startActivity(intent);
-
-        openPathPhoto("/storage/emulated/0/Pictures/PC");
-
-    }
 
     //这里path就是传的需要浏览指定的文件夹的路径
     public void openPathPhoto(String path) {
@@ -419,27 +424,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+
     //分享
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (data.getData() != null) {
-                //单次点击未使用多选的情况
-                try {
-                    Uri uri = data.getData();
-                    //TODO 对获得的uri做解析，这部分在另一篇文章讲解
-                    //String path = getPath(getApplicationContext(),uri);
-                    //TODO 对转换得到的真实路径path做相关处理
-                    share(uri);
-                    System.out.println(uri);
-                } catch (Exception e) { }
-            }
-
-    }}
-
-
-
     public void share(Uri uri) {
 
         //三方库分享调用
@@ -453,8 +440,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .build()
                 // 发起分享
                 .shareBySystem();
-
-
     }
 
 
@@ -571,6 +556,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 buttoncounter++;
+                ImageView volumeback=findViewById(R.id.volume);
                 ImageButton lbtitle=(ImageButton)findViewById(R.id.screenon);
                 ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
                 ImageView imgx=(ImageView) findViewById(R.id.imageView2);
@@ -600,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
                     heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledheart));
                     editbutton.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.olededit));
-
+                    volumeback.setVisibility(View.INVISIBLE);
                     isoled=1;
                     ConstraintSet set = new ConstraintSet();
                     ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
@@ -610,6 +596,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
                                     .getDisplayMetrics()));
                     TransitionManager.beginDelayedTransition(mlayout);
+
+
                     set.applyTo(mlayout);
 
 
@@ -645,6 +633,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     timerx.schedule(timertask,1000,5000);
                 }if(buttoncounter==3){
                     buttoncounter=1;
+                    volumeback.setVisibility(View.VISIBLE);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     Toast.makeText(this,"屏幕常亮已关闭", Toast.LENGTH_SHORT).show();
                     lbtitle.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.offf));
@@ -772,6 +761,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         mtoolbarx.setVisibility(View.VISIBLE);
                     }
                 });
+
+                break;
+            case R.id.volumeup:
+                volumecontrol("volumeup");
+                break;
+            case R.id.volumedown:
+                volumecontrol("volumedown");
+                break;
+            case R.id.mute:
+                if(ismute==0){ ImageButton mute=findViewById(R.id.mute);
+                mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.unmute));
+                ismute=1;
+                }
+                else if(ismute==1){
+                    ImageButton mute=findViewById(R.id.mute);
+                    mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.mute));
+                    ismute=0;
+                }
+                volumecontrol("mute");
+                break;
+            case R.id.nextsound:
+                volumecontrol("nextmusic");
+                break;
+            case R.id.presound:
+                volumecontrol("premusic");
+                break;
+            case R.id.pause:
+                if(ispause==0){ ImageButton mute=findViewById(R.id.pause);
+                    mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.play));
+                    volumecontrol("pause");
+                    ispause=1;
+                }
+                else if(ispause==1){
+                    ImageButton mute=findViewById(R.id.pause);
+                    volumecontrol("pause");
+                    mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.pause));
+                    ispause=0;
+                }
 
                 break;
             default:
@@ -934,6 +961,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.storebtn:
             case R.id.wallpaper:
             case R.id.photoedit:
+            case R.id.volumedown:
+            case R.id.volumeup:
+            case R.id.mute:
+            case R.id.nextsound:
+            case R.id.presound:
+            case R.id.pause:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
                     if(v.getId()==R.id.Fullscreen){
@@ -1126,6 +1159,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         text1=null;
+    }
+
+
+    public void volumecontrol(String choose)
+    {
+        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        String ip = text1.getText().toString();//murl为文本框内容
+        try {
+            socket = new DatagramSocket();
+            serverAddress = InetAddress.getByName(ip);  //②
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }
+        try {
+            String sendData = choose;
+            byte data[] = sendData.getBytes();
+            DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -1341,7 +1396,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ))
                 .into(imageView);
 
-        createPaletteAsync(BitmapFactory.decodeFile(URIx));
+
         ImageView imagebackground=findViewById(R.id.imageView3);
         Blurry.with(this)
                 .radius(3)
@@ -1368,7 +1423,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         System.out.println("错误信息");
         System.out.println(ALog.getExceptionString(e));
     }
-
+//文字颜色
     public void createPaletteAsync(Bitmap bitmap) {
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             public void onGenerated(Palette p) {

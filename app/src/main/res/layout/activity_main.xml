@@ -46,7 +46,7 @@
         tools:layout_editor_absoluteX="36dp"
         tools:layout_editor_absoluteY="268dp"
         tools:srcCompat="@tools:sample/avatars"
-        tools:visibility="visible" />
+        tools:visibility="invisible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/inputarea"
@@ -165,7 +165,7 @@
         android:id="@+id/buttonarea"
         android:layout_width="337dp"
         android:layout_height="157dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageviewarea">
@@ -330,6 +330,104 @@
             app:layout_constraintTop_toBottomOf="@+id/deleteph"
             app:layout_constraintVertical_bias="0.506"
             app:srcCompat="@drawable/photoedit" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/volumepart"
+        android:layout_width="295dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonarea">
+
+        <ImageView
+            android:id="@+id/volume"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.3"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/volumeback" />
+
+        <ImageButton
+            android:id="@+id/volumeup"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/volumeup" />
+
+        <ImageButton
+            android:id="@+id/volumedown"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/volumeup"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/volumedown" />
+
+        <ImageButton
+            android:id="@+id/mute"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/volumedown"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/mute" />
+
+        <ImageButton
+            android:id="@+id/presound"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/mute"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/persound" />
+
+        <ImageButton
+            android:id="@+id/nextsound"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/pause"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/nextsound" />
+
+        <ImageButton
+            android:id="@+id/pause"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/presound"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/pause" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
