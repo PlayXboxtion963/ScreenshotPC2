@@ -331,105 +331,120 @@
             app:layout_constraintVertical_bias="0.506"
             app:srcCompat="@drawable/photoedit" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="166dp"
+            android:layout_height="21dp"
+            android:layout_marginTop="204dp"
+            android:visibility="invisible"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+        <TextView
+            android:id="@+id/Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="下载速度"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/progressBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/print"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toTopOf="@+id/screenon"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/wallpaper"
+            app:layout_constraintVertical_bias="0.506"
+            app:srcCompat="@drawable/print" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/volumepart"
-        android:layout_width="295dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="#3E666666"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonarea">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/volume"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.3"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/volumeback" />
 
         <ImageButton
             android:id="@+id/volumeup"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
             android:background="#00FF0000"
             android:scaleType="fitCenter"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/volumeup" />
 
         <ImageButton
             android:id="@+id/volumedown"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
             android:background="#00FF0000"
             android:scaleType="fitCenter"
-            app:layout_constraintStart_toEndOf="@+id/volumeup"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/volumedown" />
 
         <ImageButton
             android:id="@+id/mute"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
             android:background="#00FF0000"
             android:scaleType="fitCenter"
-            app:layout_constraintStart_toEndOf="@+id/volumedown"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/mute" />
 
         <ImageButton
             android:id="@+id/presound"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
             android:background="#00FF0000"
             android:scaleType="fitCenter"
-            app:layout_constraintStart_toEndOf="@+id/mute"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/persound" />
 
         <ImageButton
-            android:id="@+id/nextsound"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
-            android:background="#00FF0000"
-            android:scaleType="fitCenter"
-            app:layout_constraintStart_toEndOf="@+id/pause"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/nextsound" />
-
-        <ImageButton
             android:id="@+id/pause"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
             android:background="#00FF0000"
             android:scaleType="fitCenter"
-            app:layout_constraintStart_toEndOf="@+id/presound"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/pause" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/nextsound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:background="#00FF0000"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/nextsound" />
+
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imgbackgrdx"

@@ -55,11 +55,9 @@ public class Photochoose extends AppCompatActivity {
             if (intent!=null)
             {
                 Uri uri=intent.getData();
-
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 RemoteViews views = new RemoteViews(context.getPackageName(),
                         R.layout.displayphoto);
-
                 Bitmap bitmap= null;
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
@@ -67,14 +65,12 @@ public class Photochoose extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 bitmap=SetRoundCornerBitmap(bitmap,120);
-
                 System.out.println(uri);
                 gettextcolor(bitmap,views);
                 //grantUriAccessToWidget(this,uri);
                 views.setImageViewBitmap(R.id.imagewidget,bitmap);
                 //views.setImageViewUri(R.id.imagewidget,Uri.parse(""));
                 //views.setImageViewUri(R.id.imagewidget,uri);
-
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
                 Intent resultValue = new Intent();
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);

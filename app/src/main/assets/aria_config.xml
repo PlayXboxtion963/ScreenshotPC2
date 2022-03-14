@@ -75,7 +75,7 @@
         <queueMod value="wait"/>
 
         <!--进度更新更新间隔，默认1000毫秒-->
-        <updateInterval value="1000"/>
+        <updateInterval value="100"/>
 
     </download>
 

@@ -16,5 +16,5 @@
     <color name="coloractionbar">#FF000000</color>
     <color name="colortext">#FF000000</color>
     <color name="blurcolor">#70FFFFFF</color>
-
+    <color name="backgroundvolume">#3E666666</color>
 </resources>

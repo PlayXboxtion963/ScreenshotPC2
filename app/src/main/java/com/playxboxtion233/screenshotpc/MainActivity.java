@@ -45,9 +45,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -55,6 +57,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
+import androidx.print.PrintHelper;
 
 import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
@@ -305,6 +308,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.putBoolean("yincanginput",false);
             editor.commit();
         }
+        if(userInfo.contains("profile")){
+            mtoolbar.setTitle(userInfo.getString("profile","懒得截图"));
+        }
+
     }
     public void startup(){
     btn = (ImageButton) findViewById(R.id.Fullscreen);
@@ -346,6 +353,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton editbutton=findViewById(R.id.photoedit);
     editbutton.setOnClickListener(this);
     editbutton.setOnTouchListener(this);
+    ImageButton printbtn=findViewById(R.id.print);
+    printbtn.setOnClickListener(this);
+    printbtn.setOnTouchListener(this);
     findViewById(R.id.timeTextx).setVisibility(View.INVISIBLE);
     suolue.setOnClickListener(this);
     btn_wallpaper.setOnClickListener(this);
@@ -354,6 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     btn_deleteph.setOnTouchListener(this);
     btn_share.setOnClickListener(this);
     btn_share.setOnTouchListener(this);
+
     btn_screenon.setOnClickListener(this);
     btn_screenon.setOnTouchListener(this);
     btn_debug.setOnClickListener(this);
@@ -556,7 +567,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 buttoncounter++;
-                ImageView volumeback=findViewById(R.id.volume);
+                View Linout=findViewById(R.id.volumepart);
+                ImageButton printbtn=findViewById(R.id.print);
                 ImageButton lbtitle=(ImageButton)findViewById(R.id.screenon);
                 ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
                 ImageView imgx=(ImageView) findViewById(R.id.imageView2);
@@ -580,13 +592,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_gif.setVisibility(View.INVISIBLE);
                     btn_connect.setVisibility(View.INVISIBLE);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
+                    printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledprint));
                     this.getWindow().setBackgroundDrawable(getDrawable(android.R.color.black));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledshare));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deletepholed));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
                     heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledheart));
                     editbutton.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.olededit));
-                    volumeback.setVisibility(View.INVISIBLE);
+                    Linout.setBackgroundColor(Color.TRANSPARENT);
+                    Linout.setAlpha(0.6F);
                     isoled=1;
                     ConstraintSet set = new ConstraintSet();
                     ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
@@ -604,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     btn_passwordstatue.setVisibility(View.INVISIBLE);
                     findViewById(R.id.timeTextx).setVisibility(View.VISIBLE);
-                    mtoolbar.setTitle("");
+                    mtoolbar.setTitleTextColor(Color.TRANSPARENT);
                     text1.setVisibility(View.INVISIBLE);
                     text2.setVisibility(View.INVISIBLE);
                     findViewById(R.id.imageView3).setVisibility(View.INVISIBLE);
@@ -633,7 +647,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     timerx.schedule(timertask,1000,5000);
                 }if(buttoncounter==3){
                     buttoncounter=1;
-                    volumeback.setVisibility(View.VISIBLE);
+
+
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     Toast.makeText(this,"屏幕常亮已关闭", Toast.LENGTH_SHORT).show();
                     lbtitle.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.offf));
@@ -642,7 +657,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.daydingbu));
                     btn_gif.setVisibility(View.VISIBLE);
                     btn_connect.setVisibility(View.VISIBLE);
+                    Linout.setBackgroundColor(Color.argb(50, 102, 102, 102));
+                    Linout.setAlpha(1F);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.backgrd));
+                    printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.print));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deleteph));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.share));
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.wallpapaer));
@@ -661,8 +679,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                        TransitionManager.beginDelayedTransition(mlayout);
                        set.applyTo(mlayout);}
 
-                    mtoolbar.setTitle("懒得截图");
-                    timerx.cancel();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mtoolbar.setTitleTextColor(getColor(R.color.colortext));
+                }else{
+                    mtoolbar.setTitleTextColor(00000000);
+                }
+                timerx.cancel();
                     ConstraintLayout mview=(ConstraintLayout)findViewById(R.id.mainview);
                     mview.scrollTo(0,0);
                     btn_passwordstatue.setVisibility(View.VISIBLE);
@@ -801,10 +823,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 break;
+            case R.id.print:
+                if(Uritoshare!=null){
+                    try {
+                        doPhotoPrint(MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uritoshare));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
+                break;
             default:
                 break;
 
         }
+    }
+    private void doPhotoPrint(Bitmap bitmap) {
+        PrintHelper photoPrinter = new PrintHelper(this);
+        photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+        photoPrinter.printBitmap("SCREENSHOTPRINT", bitmap);
     }
 
     private void showNormalMoreButtonDialog(View view){
@@ -892,11 +929,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void showSingleAlertDialog(View view,String[] array,String[] namearray,EditText text){
         String[] items = array;
+        Toolbar mtoolbar=findViewById(R.id.my_toolbar);
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();
         alertBuilder.setTitle("选择计算机,记得改密码框");
         alertBuilder.setSingleChoiceItems(namearray, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                editor.putString("profile",namearray[i]);
+                editor.commit();//提交修改
+                mtoolbar.post(new Runnable() {
+                    public void run() {
+                        mtoolbar.setTitle(namearray[i]);
+                    }
+                });
 
                 text.post(new Runnable() {
                             public void run() {
@@ -967,6 +1014,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.nextsound:
             case R.id.presound:
             case R.id.pause:
+            case R.id.print:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
                     if(v.getId()==R.id.Fullscreen){
@@ -976,9 +1024,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                     if(v.getId()==R.id.Fullscreen){
-                        mimagebutton.animate().scaleX(0.8f).scaleY(0.8f).setDuration(150).start();}
+                        mimagebutton.animate().scaleX(0.9f).scaleY(0.9f).setDuration(150).start();}
                     if(v.getId()==R.id.Topcap){
-                        mimagebutton2.animate().scaleX(0.8f).scaleY(0.8f).setDuration(150).start();}
+                        mimagebutton2.animate().scaleX(0.9f).scaleY(0.9f).setDuration(150).start();}
 
                 }
                 break;
@@ -1184,8 +1232,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-
     //ip检测
     public int check() {
         EditText text1 = (EditText) findViewById(R.id.PCIP);
@@ -1306,7 +1352,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .option(ftpOption)
                 .setFilePath(Path) // 设置文件保存路径
                 .create();
-
+        ProgressBar mbar=findViewById(R.id.progressBar);
+        mbar.setVisibility(View.VISIBLE);
+        TextView speed=findViewById(R.id.Speed);
+        speed.setVisibility(View.VISIBLE);
+        speed.setText("下载速度");
         URIx = Path;//把局部路径转换为全局路径，即下载完到缓存文件夹的图片，这样回调中才能使用
     }
 
@@ -1415,15 +1465,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         canbeclick=true;
+        ProgressBar mbar=findViewById(R.id.progressBar);
+        mbar.setVisibility(View.INVISIBLE);
+        mbar.setProgress(0);
+        TextView speed=findViewById(R.id.Speed);
+        speed.setVisibility(View.INVISIBLE);
     }
     //下载失败toast
     @Download.onTaskFail void taskFail(DownloadTask task, Exception e) {
         canbeclick=true;
         Toast.makeText(this,"下载失败，可能是密码错误或未连接上",Toast.LENGTH_SHORT).show();
+        ProgressBar mbar=findViewById(R.id.progressBar);
+        mbar.setVisibility(View.INVISIBLE);
+        mbar.setProgress(0);
+        TextView speed=findViewById(R.id.Speed);
+        speed.setVisibility(View.INVISIBLE);
         System.out.println("错误信息");
         System.out.println(ALog.getExceptionString(e));
     }
 //文字颜色
+    @Download.onTaskRunning
+    protected void running(DownloadTask task) {
+        ProgressBar mbar=findViewById(R.id.progressBar);
+            mbar.setProgress(task.getPercent()); // 获取百分比进
+        TextView speed=findViewById(R.id.Speed);
+        speed.setText(task.getConvertSpeed());
+    }
+
     public void createPaletteAsync(Bitmap bitmap) {
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             public void onGenerated(Palette p) {

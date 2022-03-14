@@ -19,11 +19,11 @@
         android:id="@+id/timeTextx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:alpha="1"
         android:format12Hour="hh:mm:ss"
         android:format24Hour="HH:mm:ss"
         android:gravity="center"
-        android:layout_centerInParent="true"
         android:textSize="65sp"
         android:textStyle="bold"
         tools:visibility="visible" />
