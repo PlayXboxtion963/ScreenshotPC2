@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences.Editor editor = userInfo.edit();//获取Editor
             switch (menuItem.getItemId()) {
                 case R.id.menu_login:
-                    Toast.makeText(MainActivity.this," v4.8 感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,"感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.menu_file:
                     openPathPhoto("/storage/emulated/0/Pictures/PC");
@@ -251,6 +251,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case R.id.exitx:
                     exit();
                     System.exit(0);
+                    break;
+                case R.id.taskman:
+                    getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                    volumecontrol("taskmanager");
                     break;
                 default:
                     break;
@@ -466,20 +470,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar mtoolbarx=(Toolbar)findViewById(R.id.my_toolbar);
         ImageButton editbutton=findViewById(R.id.photoedit);
         ImageView heartback=findViewById(R.id.imageView4);
+        long currentTime;
         switch (view.getId()) {
+
 
             case R.id.Fullscreen://全屏按钮
                 if(canbeclick==false){
                     return;
                 }
-                if (check() == 1)
-                    break;
-                long currentTime = System.currentTimeMillis();
-                if (currentTime-lastClickTime1>2000){
-                    lastClickTime1 = currentTime;
+                currentTime = System.currentTimeMillis();
+                if (currentTime-lastClickTime>1000){
+                    lastClickTime = currentTime;
                 }else{
                     return;
                 }
+                if (check() == 1)
+                    break;
                 shenqingtupian();
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -501,7 +507,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 currentTime = System.currentTimeMillis();
-                if (currentTime-lastClickTime>2000){
+                if (currentTime-lastClickTime>1000){
                     lastClickTime = currentTime;
                 }else{
                     return;
@@ -591,6 +597,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
                     btn_gif.setVisibility(View.INVISIBLE);
                     btn_connect.setVisibility(View.INVISIBLE);
+
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledprint));
                     this.getWindow().setBackgroundDrawable(getDrawable(android.R.color.black));
@@ -872,7 +879,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }//按下删除后弹对话框
     private void deletephotowith(View view){
         deleteUri(this,Uritoshare);
-        Toast.makeText(this,"删除成功", Toast.LENGTH_SHORT).show();
+
         ImageView imageViewx=(ImageView)findViewById(R.id.imageView3);
         imageViewx.setImageResource(android.R.color.transparent);
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
@@ -892,12 +899,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (uri.toString().startsWith("content://")) {
             // content://开头的Uri
-            context.getContentResolver().delete(uri, null, null);
+            try{
+            context.getContentResolver().delete(uri, null, null);}
+            catch(Exception e)
+            {
+                Toast.makeText(this,"图片未知",Toast.LENGTH_LONG).show();
+                return;
+            }
+            Toast.makeText(this,"删除成功", Toast.LENGTH_SHORT).show();
         } else {
             File file = sharefile;
             if (file.exists()&& file.isFile()){
                 file.delete();
             }
+            Toast.makeText(this,"删除成功", Toast.LENGTH_SHORT).show();
         }
     }//真正执行删除图片的位置
     /**
@@ -1138,9 +1153,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
 
         }
-        Toast.makeText(MainActivity.this, "申请让电脑截图中", Toast.LENGTH_SHORT).show();
 
-        progressDialog = ProgressDialog.show(this, "", "下载中");
+
+        progressDialog = ProgressDialog.show(this, "", "申请中");
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -1182,8 +1197,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
 
         }
-        Toast.makeText(MainActivity.this, "申请局部截图中", Toast.LENGTH_SHORT).show();
-        progressDialog = ProgressDialog.show(this, "", "下载中");
+
+        progressDialog = ProgressDialog.show(this, "", "申请中");
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -1212,6 +1227,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void volumecontrol(String choose)
     {
+        EditText text2 = (EditText) findViewById(R.id.password);
+        String passwordnn = text2.getText().toString();//murl为文本框内容
         EditText text1 = (EditText) findViewById(R.id.PCIP);
         String ip = text1.getText().toString();//murl为文本框内容
         try {
@@ -1221,7 +1238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         try {
-            String sendData = choose;
+            String sendData = choose+passwordnn;
             byte data[] = sendData.getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
             socket.send(packet);
@@ -1489,7 +1506,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ProgressBar mbar=findViewById(R.id.progressBar);
             mbar.setProgress(task.getPercent()); // 获取百分比进
         TextView speed=findViewById(R.id.Speed);
-        speed.setText(task.getConvertSpeed());
+        speed.setText(task.getConvertSpeed()+"  |  "+task.getPercent()+"%");
     }
 
     public void createPaletteAsync(Bitmap bitmap) {
