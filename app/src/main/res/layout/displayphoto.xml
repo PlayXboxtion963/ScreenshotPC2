@@ -2,30 +2,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.ScreenshotPC.AppWidget.Container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#00FFFFFF"
     android:padding="0dp"
     android:theme="@style/Theme.ScreenshotPC.AppWidgetContainer">
 
     <ImageView
         android:id="@+id/imagewidget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerInside"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextClock
         android:id="@+id/timeTextx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:alpha="1"
+        android:layout_alignBottom="@id/imagewidget"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="12dp"
+        android:alpha="0.9"
         android:format12Hour="hh:mm:ss"
         android:format24Hour="HH:mm:ss"
-        android:gravity="center"
-        android:textSize="65sp"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="0"
+        android:textSize="35sp"
         android:textStyle="bold"
         tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/buwigre"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@id/imagewidget"
+        android:layout_marginLeft="12dp"
+        android:alpha="0.6"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/btnshape"
+        android:text="↺" />
 
 </RelativeLayout>

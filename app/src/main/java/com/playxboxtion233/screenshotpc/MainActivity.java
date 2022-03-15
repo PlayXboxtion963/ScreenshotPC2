@@ -98,6 +98,7 @@ import jp.wasabeef.blurry.Blurry;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener {
     private ImageButton btn;
+    private String TASKNAME;
     private static int buttoncounter=1;
     private static String URIx = null;
     private ImageButton btn_connect;
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             int option;
-            option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION ;
+            option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN ;
             window.getDecorView().setSystemUiVisibility(option);
             window.setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
@@ -1363,7 +1364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         String Path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + mImageFileName;
-
+        TASKNAME="Pictures"+mImageFileName;
         long taskId = Aria.download(this)
                 .loadFtp(murl) // 下载地址
                 .option(ftpOption)
@@ -1386,13 +1387,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         fileName = mImageFileName;
         Bitmap mbitmap = null;
-
         if(BitmapFactory.decodeFile(Path)!=null){
             mbitmap=BitmapFactory.decodeFile(Path);
         }else{
             return;
         }
-
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
@@ -1451,6 +1450,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //下载成功后才开始拷贝缓存和一些任务
     @Download.onTaskComplete
     void taskComplete(DownloadTask task) {
+        if(task.getTaskName().equals(TASKNAME)==false){
+            return;
+        }
         Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         Glide.with(this)
@@ -1490,6 +1492,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //下载失败toast
     @Download.onTaskFail void taskFail(DownloadTask task, Exception e) {
+        if(task.getTaskName().equals(TASKNAME)==false){
+            return;
+        }
         canbeclick=true;
         Toast.makeText(this,"下载失败，可能是密码错误或未连接上",Toast.LENGTH_SHORT).show();
         ProgressBar mbar=findViewById(R.id.progressBar);
@@ -1503,6 +1508,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //文字颜色
     @Download.onTaskRunning
     protected void running(DownloadTask task) {
+        if(task.getTaskName().equals(TASKNAME)==false){
+            return;
+        }
         ProgressBar mbar=findViewById(R.id.progressBar);
             mbar.setProgress(task.getPercent()); // 获取百分比进
         TextView speed=findViewById(R.id.Speed);

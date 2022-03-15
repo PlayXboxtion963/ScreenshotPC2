@@ -6,7 +6,7 @@
     android:minWidth="100dp"
     android:minHeight="100dp"
     android:previewImage="@drawable/newlogo"
-    android:configure="com.playxboxtion233.screenshotpc.Photochoose"
+
     android:previewLayout="@layout/displayphoto"
     android:targetCellWidth="4"
     android:targetCellHeight="2"

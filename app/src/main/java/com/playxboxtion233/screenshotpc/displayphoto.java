@@ -20,19 +20,25 @@ public class displayphoto extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.displayphoto);
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
-        views.setImageViewUri(R.id.imagewidget, Uri.parse(""));
-
-        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+        final int N = appWidgetIds.length;
+        for (int i=0; i<N; i++) {
+            int appWidgetId = appWidgetIds[i];
+            //获取远程的控件，第一个参数设置程序名称，第二个参数是设置AppWidget的布局文件
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.displayphoto);
+            Intent openApp = new Intent(context, Photochoose.class);
+            openApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            openApp.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetIds[i]);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, openApp, PendingIntent.FLAG_UPDATE_CURRENT);
+            // 设置widget的点击事件
+            views.setOnClickPendingIntent(R.id.buwigre, pendingIntent);
+            //更新AppWidget的绑定事件
+            //第一个参数指定绑定到哪一个AppWidget
+            //第二个参数是指定要更新哪一个远程控件
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
 
     }

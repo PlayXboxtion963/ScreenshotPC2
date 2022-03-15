@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -18,8 +20,10 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,6 +69,7 @@ public class Photochoose extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 bitmap=SetRoundCornerBitmap(bitmap,120);
+
                 System.out.println(uri);
                 gettextcolor(bitmap,views);
                 //grantUriAccessToWidget(this,uri);
@@ -76,7 +81,6 @@ public class Photochoose extends AppCompatActivity {
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
                 setResult(RESULT_OK, resultValue);
                 finish();
-
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
@@ -94,6 +98,19 @@ public class Photochoose extends AppCompatActivity {
     public static Bitmap SetRoundCornerBitmap(Bitmap bitmap, float roundPx) {
         int width = bitmap.getWidth();
         int heigh = bitmap.getHeight();
+        if(width*heigh*4>15163200)
+        {
+            System.out.println("图片过大");
+            float scaleWidth = ((float) 1920) / width;
+            float scaleHeight = ((float) 1080) / heigh;
+            // 取得想要缩放的matrix参数.
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleWidth, scaleHeight);
+            // 得到新的图片.
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, width,heigh, matrix, true);
+            width=1920;
+            heigh=1080;
+        }
         // 创建输出bitmap对象
         Bitmap outmap = Bitmap.createBitmap(width, heigh,
                 Bitmap.Config.ARGB_8888);
@@ -114,10 +131,11 @@ public class Photochoose extends AppCompatActivity {
 
     public void gettextcolor(Bitmap bitmap,RemoteViews views){
         Palette palette = Palette.from(bitmap).generate();
-        int titleColor = palette.getLightMutedColor( 0x7f040000);
+        int titleColor = palette.getLightVibrantColor( 0x7f040000);
         System.out.println(titleColor);
         String alphaset="FF"+String.format("%08x",titleColor).substring(2);//33为透明度十六进制
         System.out.println(String.format("%08x",titleColor).substring(2));
         views.setTextColor(R.id.timeTextx,(int) Long.parseLong(alphaset, 16));
+        views.setTextColor(R.id.buwigre,(int) Long.parseLong(alphaset, 16));
     }
 }
