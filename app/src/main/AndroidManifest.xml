@@ -36,17 +36,22 @@
         android:theme="@style/Theme.ScreenshotPC"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name=".TileDowloadphoto"
+            android:name=".TrueTile"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             android:exported="false" />
         <activity
-            android:name=".widgetDowloadPhoto"
+            android:name=".TrueDowloadWidget"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             android:exported="false" />
 
         <receiver
-            android:name=".WidgetDowloadquick"
+            android:name=".DowloadWidgetStart"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+
             </intent-filter>
 
             <meta-data
@@ -55,11 +60,13 @@
         </receiver>
 
         <activity
-            android:name=".Photochoose"
+            android:name=".TrueDisplayWidget"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             android:exported="false" />
 
         <receiver
-            android:name=".displayphoto"
+            android:name=".DisPlayWidgetStart"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -95,7 +102,7 @@
         </provider>
 
         <service
-            android:name=".MyTileService"
+            android:name=".TileStart"
             android:exported="true"
             android:icon="@drawable/tilecap"
             android:label="全屏截取"

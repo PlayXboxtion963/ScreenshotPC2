@@ -4,11 +4,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -45,40 +44,51 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class widgetDowloadPhoto extends AppCompatActivity {
+public class TrueDowloadWidget extends AppCompatActivity {
     private String URIx;
     private String TASKNAME;
     private static Uri muri=null;
     private DatagramSocket socket = null;
     private InetAddress serverAddress = null;
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    final Context context = widgetDowloadPhoto.this;
+    final Context context = TrueDowloadWidget.this;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        toastttt();
         super.onCreate(savedInstanceState);
         moveTaskToBack(true);
-        Aria.download(this).register();
-        setContentView(R.layout.activity_tilewidget_dowload_photo);
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        if(userInfo.getBoolean("canbewidget",true)==false){
+            Toast.makeText(this, "点的太快，上次还没下完哪", Toast.LENGTH_LONG).show();
+            return;
+        }else {
+            editor.putBoolean("canbewidget", false);
+            editor.commit();
+            toastttt();
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
 
-        shenqingtupian();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                savephotobyaria();
+            moveTaskToBack(true);
+            Aria.download(this).register();
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                mAppWidgetId = extras.getInt(
+                        AppWidgetManager.EXTRA_APPWIDGET_ID,
+                        AppWidgetManager.INVALID_APPWIDGET_ID);
             }
-        };
-        Timer timer = new Timer();
-        timer.schedule(task, 990);//3秒后执行TimeTask的run方法
 
+            shenqingtupian();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    savephotobyaria();
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 990);//3秒后执行TimeTask的run方法
+        }
 
 
     }
@@ -189,8 +199,7 @@ public class widgetDowloadPhoto extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Download.onTaskComplete
     void taskComplete(DownloadTask task) {
-
-        System.out.println(task.getTaskName());
+        System.out.println("小组件"+TASKNAME);
         if(task.getTaskName().equals(TASKNAME)==false){
             return;
         }
@@ -214,11 +223,18 @@ public class widgetDowloadPhoto extends AppCompatActivity {
         views.setImageViewResource(R.id.imageView5,R.drawable.widgetshow);
         views.setImageViewUri(R.id.imageView5,muri);
         appWidgetManager.updateAppWidget(mAppWidgetId, views);
+
+
         System.out.println(muri);
-        cancletoastttt();
+        cancletoastttt(0);
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, resultValue);
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        editor.putBoolean("canbewidget",true);
+        editor.putString("lastsave",muri.toString());
+        editor.commit();
         finish();
 
     }
@@ -232,7 +248,20 @@ public class widgetDowloadPhoto extends AppCompatActivity {
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void cancletoastttt()
+    @Download.onTaskFail void taskFail(DownloadTask task, Exception e) {
+        if(task.getTaskName().equals(TASKNAME)==false){
+            return;
+        }
+        cancletoastttt(1);
+        Toast.makeText(this,"下载失败，可能是密码错误或未连接上",Toast.LENGTH_LONG).show();
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        editor.putBoolean("canbewidget",true);
+        editor.commit();
+        finish();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void cancletoastttt(int a)
     {
         final String CHANNEL_ID = "channel_id_1";
         final String CHANNEL_NAME = "channel_name_1";
@@ -246,12 +275,28 @@ public class widgetDowloadPhoto extends AppCompatActivity {
         System.out.println(muri);
         intent.setDataAndType(muri,"image/*");
         PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,0);
-        builder
-                .setContentTitle("下载完成")
-                .setContentText("下载完成了")
-                .setSmallIcon(R.drawable.newlogo)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+
+        if(a==1){
+            builder
+                    .setContentTitle("下载失败")
+                    .setContentText("下载失败了")
+                    .setSmallIcon(R.drawable.newlogo)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+        }else{
+            try {
+                builder
+                        .setContentTitle("下载完成")
+                        .setContentText("下载完成了")
+                        .setSmallIcon(R.drawable.newlogo)
+                        .setLargeIcon(MediaStore.Images.Media.getBitmap(this.getContentResolver(), muri))
+                        .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(MediaStore.Images.Media.getBitmap(this.getContentResolver(), muri))
+                                .bigLargeIcon(null))  .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         mNotificationManager.cancel(1);
         mNotificationManager.notify(2, builder.build());
     }

@@ -1,8 +1,6 @@
 package com.playxboxtion233.screenshotpc;
 
 import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,19 +11,18 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
 
 import java.lang.reflect.Method;
 
-public class MyTileService extends TileService {
-    public static final String TAG = MyTileService.class.getSimpleName();
+public class TileStart extends TileService {
+    public static final String TAG = TileStart.class.getSimpleName();
 
     @Override
     public void onTileAdded() {
         super.onTileAdded();
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-        editor.putLong("lastclicktime",System.currentTimeMillis());
+        editor.putBoolean("canbetile",true);
         editor.commit();
         // 当用户添加Tile到快速设置区域时调用，可以在这里进行一次性的初始化操作。
         Log.d(TAG, "onTileAdded()============");
@@ -56,21 +53,25 @@ public class MyTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
-        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-        if(System.currentTimeMillis()-userInfo.getLong("lastclicktime",0)<10000){
-            Toast.makeText(this, "点的太快！", Toast.LENGTH_SHORT).show();
+        collapseStatusBar(this);
+        if (Build.VERSION.SDK_INT <=29) {
+            Toast.makeText(this, "快捷截图暂不支持安卓10以下", Toast.LENGTH_SHORT).show();
             return;
         }
-        editor.putLong("lastclicktime",System.currentTimeMillis());
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        if(userInfo.getBoolean("canbetile",true)==false){
+            Toast.makeText(this,"上次还没下载完",Toast.LENGTH_LONG).show();
+            return;
+        }
+        editor.putBoolean("canbetile",false);
         editor.commit();
-        collapseStatusBar(this);
         int state = getQsTile().getState();
         if (state == Tile.STATE_INACTIVE) {getQsTile().setState(Tile.STATE_ACTIVE);}
         else{getQsTile().setState(Tile.STATE_INACTIVE);}
         Intent intent=new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(this,TileDowloadphoto.class);
+        intent.setClass(this, TrueTile.class);
         startActivity(intent);
 
 

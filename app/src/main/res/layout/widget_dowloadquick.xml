@@ -16,8 +16,9 @@
     <Button
         android:id="@+id/dowloadwidget"
         android:background="@drawable/btnshape"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:alpha="0.7"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="32dp"
         android:layout_centerHorizontal="true"

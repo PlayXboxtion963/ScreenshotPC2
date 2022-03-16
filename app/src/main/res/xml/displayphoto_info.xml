@@ -5,7 +5,7 @@
     android:initialLayout="@layout/displayphoto"
     android:minWidth="100dp"
     android:minHeight="100dp"
-    android:previewImage="@drawable/newlogo"
+    android:previewImage="@drawable/clock"
 
     android:previewLayout="@layout/displayphoto"
     android:targetCellWidth="4"

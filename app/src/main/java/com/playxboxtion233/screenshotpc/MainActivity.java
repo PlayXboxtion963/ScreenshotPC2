@@ -1450,6 +1450,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //下载成功后才开始拷贝缓存和一些任务
     @Download.onTaskComplete
     void taskComplete(DownloadTask task) {
+        System.out.println("主活动"+TASKNAME);
         if(task.getTaskName().equals(TASKNAME)==false){
             return;
         }

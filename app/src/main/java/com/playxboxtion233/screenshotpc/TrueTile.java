@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -44,7 +45,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TileDowloadphoto extends AppCompatActivity {
+public class TrueTile extends AppCompatActivity {
     private String URIx;
     private String TASKNAME;
     private static Uri muri=null;
@@ -54,6 +55,8 @@ public class TileDowloadphoto extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         toastttt();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tile_dowloadphoto);
         moveTaskToBack(true);
@@ -133,6 +136,7 @@ public class TileDowloadphoto extends AppCompatActivity {
         }
     }
     public void shenqingtupian() {
+        System.out.println("申请");
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();//获取Editor
         String ip=userInfo.getString("userip","000");
@@ -176,16 +180,29 @@ public class TileDowloadphoto extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        cancletoastttt();
+        cancletoastttt(0);
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        editor.putBoolean("canbetile",true);
+        editor.commit();
+        finish();
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Download.onTaskFail void taskFail(DownloadTask task, Exception e) {
+        System.out.println("TILE！！！"+TASKNAME);
         if(task.getTaskName().equals(TASKNAME)==false){
             return;
         }
+        cancletoastttt(1);
         Toast.makeText(this,"下载失败，可能是密码错误或未连接上",Toast.LENGTH_LONG).show();
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        editor.putBoolean("canbetile",true);
+        editor.commit();
+        finish();
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void cancletoastttt()
+    public void cancletoastttt(int a)
     {
         final String CHANNEL_ID = "channel_id_1";
         final String CHANNEL_NAME = "channel_name_1";
@@ -199,14 +216,31 @@ public class TileDowloadphoto extends AppCompatActivity {
         System.out.println(muri);
         intent.setDataAndType(muri,"image/*");
         PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,0);
-        builder
-                .setContentTitle("下载完成")
-                .setContentText("下载完成了")
-                .setSmallIcon(R.drawable.newlogo)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-        mNotificationManager.cancel(1);
-        mNotificationManager.notify(2, builder.build());
+
+                if(a==1){
+                    builder
+                            .setContentTitle("下载失败")
+                            .setContentText("下载失败了")
+                            .setSmallIcon(R.drawable.newlogo)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+                }else{
+                    try {
+                        builder
+                                .setContentTitle("下载完成")
+                                .setContentText("下载完成了")
+                                .setSmallIcon(R.drawable.newlogo)
+                                .setLargeIcon(MediaStore.Images.Media.getBitmap(this.getContentResolver(), muri))
+                                .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(MediaStore.Images.Media.getBitmap(this.getContentResolver(), muri))
+                                        .bigLargeIcon(null))
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        mNotificationManager.cancel(3);
+        mNotificationManager.notify(4, builder.build());
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void toastttt()
@@ -224,6 +258,6 @@ public class TileDowloadphoto extends AppCompatActivity {
                 .setContentText("尝试下载")
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.newlogo);
-        mNotificationManager.notify(1, builder.build());
+        mNotificationManager.notify(3, builder.build());
     }
 }
