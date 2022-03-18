@@ -14,5 +14,12 @@
         android:icon="@drawable/ctrl"
         android:title="任务管理器"
         android:orderInCategory="90"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/light"
+        android:icon="@drawable/light"
+        android:title="亮度+"
+        android:orderInCategory="90"
+        app:showAsAction="always" />
+    />
 </menu>

@@ -3,6 +3,7 @@ package com.playxboxtion233.screenshotpc;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,7 +18,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.media.Image;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,10 +35,15 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.transition.TransitionManager;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -46,10 +52,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -130,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean canbeclick=true;
     private int ismute=0;
     private int ispause=0;
+    private View Lightlayout;
     private AlertDialog signlechoose;
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -144,20 +151,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         verifyStoragePermissions(this);
 
         setContentView(R.layout.activity_main);
-
-        startup();
+        startup();//按钮监听器初始化
         Window window = this.getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            int option;
-            option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN ;
-            window.getDecorView().setSystemUiVisibility(option);
-            window.setStatusBarColor(Color.TRANSPARENT);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        int option;
+        option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN ;
+        window.getDecorView().setSystemUiVisibility(option);
+        window.setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
-
         TextView mtext=findViewById(R.id.heartrate);
-        //toolbar初始化
 
+
+
+        //亮度调节初始化
+        LayoutInflater inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.lightseekbar, (ViewGroup)findViewById(R.id.elementseek));
+        Button yourDialogButton = (Button)layout.findViewById(R.id.your_dialog_button);
+        SeekBar yourDialogSeekBar =layout.findViewById(R.id.your_dialog_seekbar);
+        TextView lighttext=layout.findViewById(R.id.lighttext);
+        Dialog yourDialog = new Dialog(this);
+        yourDialog.setContentView(layout);
+        SeekBar.OnSeekBarChangeListener yourSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //add code here
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                //add code here
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
+                //add code here
+                layout.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                lighttext.setText("亮度设置为:"+String.valueOf(progress));
+            }
+        };
+        yourDialogButton.setOnClickListener(this);
+        yourDialogSeekBar.setOnSeekBarChangeListener(yourSeekBarListener);
+        Lightlayout=layout;
+
+        //toolbar初始化
         Toolbar mtoolbar= findViewById(R.id.my_toolbar);
         mtoolbar.setTitle(R.string.app_name);
         mtoolbar.inflateMenu(R.menu.mymenu);
@@ -257,6 +295,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
                     volumecontrol("taskmanager");
                     break;
+                case R.id.light:
+                    getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+
+                    yourDialog.show();
+                    break;
                 default:
                     break;
             }
@@ -266,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         });
         //密码隐藏
-        EditText et_password = (EditText)findViewById(R.id.password);
+        EditText et_password = findViewById(R.id.password);
         et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
 
@@ -319,17 +362,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     public void startup(){
-    btn = (ImageButton) findViewById(R.id.Fullscreen);
+    btn = findViewById(R.id.Fullscreen);
     btn_connect = findViewById(R.id.storebtn);
-    btn_shotwindow = (ImageButton) findViewById(R.id.Topcap);
-    btn_gif=(ImageButton)findViewById(R.id.search);
-    btn_history=(ImageButton)findViewById(R.id.history);
-    Button btn_debug = (Button) findViewById(R.id.debug);
-    ImageButton btn_screenon=(ImageButton)findViewById(R.id.screenon);
-    ImageButton btn_passwordstatue = (ImageButton) findViewById(R.id.passwordstatue);
-    ImageButton btn_share=(ImageButton)findViewById(R.id.share);
-    ImageButton btn_deleteph=(ImageButton)findViewById(R.id.deleteph);
-    ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
+    btn_shotwindow = findViewById(R.id.Topcap);
+    btn_gif= findViewById(R.id.search);
+    btn_history= findViewById(R.id.history);
+    Button btn_debug = findViewById(R.id.debug);
+    ImageButton btn_screenon= findViewById(R.id.screenon);
+    ImageButton btn_passwordstatue = findViewById(R.id.passwordstatue);
+    ImageButton btn_share= findViewById(R.id.share);
+    ImageButton btn_deleteph= findViewById(R.id.deleteph);
+    ImageButton btn_wallpaper= findViewById(R.id.wallpaper);
     ImageButton volumeupbtn=findViewById(R.id.volumeup);
     volumeupbtn.setOnClickListener(this);
     ImageButton volumedownbtn=findViewById(R.id.volumedown);
@@ -348,13 +391,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     mutebtn.setOnClickListener(this);
     mutebtn.setOnTouchListener(this);
     volumedownbtn.setOnClickListener(this);
-    PhotoView photoView = (PhotoView) findViewById(R.id.img);
+    PhotoView photoView = findViewById(R.id.img);
     photoView.setVisibility(View.INVISIBLE);
     ImageView ImageViewxxx=findViewById(R.id.imgbackgrdx);
     ImageViewxxx.setVisibility(View.INVISIBLE);
     ImageViewxxx.setOnClickListener(this);
     photoView.setOnClickListener(this);
-    ImageView suolue=(ImageView)findViewById(R.id.imageView);
+    ImageView suolue= findViewById(R.id.imageView);
     ImageButton editbutton=findViewById(R.id.photoedit);
     editbutton.setOnClickListener(this);
     editbutton.setOnTouchListener(this);
@@ -386,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     btn_history.setOnTouchListener(this);
 
         mblue=new Bluetoothheart();
-        TextView et = (TextView) findViewById(R.id.heartrate);
+        TextView et = findViewById(R.id.heartrate);
         TextWatcher watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -425,7 +468,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
         };
         et.addTextChangedListener(watcher);
-        }//心率文本框变化监测
+
+    }//心率文本框变化监测
 
 
     //这里path就是传的需要浏览指定的文件夹的路径
@@ -465,10 +509,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         FindOutDevices mfind=new FindOutDevices();
-        PhotoView photoView = (PhotoView) findViewById(R.id.img);
+        PhotoView photoView = findViewById(R.id.img);
         ImageView imagebackg=findViewById(R.id.imgbackgrdx);
-        ImageView ImageViewxx=(ImageView)findViewById(R.id.imageView);
-        Toolbar mtoolbarx=(Toolbar)findViewById(R.id.my_toolbar);
+        ImageView ImageViewxx= findViewById(R.id.imageView);
+        Toolbar mtoolbarx= findViewById(R.id.my_toolbar);
         ImageButton editbutton=findViewById(R.id.photoedit);
         ImageView heartback=findViewById(R.id.imageView4);
         long currentTime;
@@ -527,7 +571,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 gethisrotyip();
                 break;
             case R.id.search:
-                EditText text1x = (EditText) findViewById(R.id.PCIP);
+                EditText text1x = findViewById(R.id.PCIP);
                 currentTime = System.currentTimeMillis();
                 if (currentTime-lastClickTime>9000){
                     lastClickTime = currentTime;
@@ -563,7 +607,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //setClass函数的第一个参数是一个Context对象
                 //Context是一个类，Activity是Context类的子类，也就是说，所有的Activity对象，都可以向上转型为Context对象
                 //setClass函数的第二个参数是一个Class对象，在当前场景下，应该传入需要被启动的Activity类的class对象
-                intent.setClass(MainActivity.this, MainActivity2.class);
+                intent.setClass(MainActivity.this, DebugActivity.class);
                 startActivity(intent);
                 break;
             case R.id.screenon:
@@ -576,18 +620,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttoncounter++;
                 View Linout=findViewById(R.id.volumepart);
                 ImageButton printbtn=findViewById(R.id.print);
-                ImageButton lbtitle=(ImageButton)findViewById(R.id.screenon);
-                ImageButton btn_wallpaper=(ImageButton)findViewById(R.id.wallpaper);
-                ImageView imgx=(ImageView) findViewById(R.id.imageView2);
+                ImageButton lbtitle= findViewById(R.id.screenon);
+                ImageButton btn_wallpaper= findViewById(R.id.wallpaper);
+                ImageView imgx= findViewById(R.id.imageView2);
                 View decorView = getWindow().getDecorView();
                 WindowManager.LayoutParams windowLP = getWindow().getAttributes();
                 Paint paint = new Paint();
-                ImageButton btn_share=(ImageButton)findViewById(R.id.share);
-                ImageButton btn_deleteph=(ImageButton)findViewById(R.id.deleteph);
-                ImageButton btn_passwordstatue=(ImageButton)findViewById(R.id.passwordstatue);
+                ImageButton btn_share= findViewById(R.id.share);
+                ImageButton btn_deleteph= findViewById(R.id.deleteph);
+                ImageButton btn_passwordstatue= findViewById(R.id.passwordstatue);
                 ColorMatrix cm = new ColorMatrix();
-                EditText text1 = (EditText) findViewById(R.id.PCIP);
-                EditText text2 = (EditText) findViewById(R.id.password);
+                EditText text1 = findViewById(R.id.PCIP);
+                EditText text2 = findViewById(R.id.password);
                 Toolbar mtoolbar=findViewById(R.id.my_toolbar);
                 if(buttoncounter==2){
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -598,7 +642,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
                     btn_gif.setVisibility(View.INVISIBLE);
                     btn_connect.setVisibility(View.INVISIBLE);
-
+                    findViewById(R.id.taskman).setAlpha(0.5f);
+                    findViewById(R.id.light).setAlpha(0.5f);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledprint));
                     this.getWindow().setBackgroundDrawable(getDrawable(android.R.color.black));
@@ -611,7 +656,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Linout.setAlpha(0.6F);
                     isoled=1;
                     ConstraintSet set = new ConstraintSet();
-                    ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+                    ConstraintLayout mlayout = findViewById(R.id.mainview);
                     set.clone(mlayout);
 
                     set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
@@ -667,6 +712,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_connect.setVisibility(View.VISIBLE);
                     Linout.setBackgroundColor(Color.argb(50, 102, 102, 102));
                     Linout.setAlpha(1F);
+                findViewById(R.id.taskman).setAlpha(1);
+                findViewById(R.id.light).setAlpha(1);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.backgrd));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.print));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deleteph));
@@ -681,7 +728,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 isoled=0;
                 if(yincangbiaozhi==true){ConstraintSet set = new ConstraintSet();
-                       ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+                       ConstraintLayout mlayout = findViewById(R.id.mainview);
                        set.clone(mlayout);
                        set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
                        TransitionManager.beginDelayedTransition(mlayout);
@@ -693,7 +740,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mtoolbar.setTitleTextColor(00000000);
                 }
                 timerx.cancel();
-                    ConstraintLayout mview=(ConstraintLayout)findViewById(R.id.mainview);
+                    ConstraintLayout mview= findViewById(R.id.mainview);
                     mview.scrollTo(0,0);
                     btn_passwordstatue.setVisibility(View.VISIBLE);
                     text1.setVisibility(View.VISIBLE);
@@ -752,7 +799,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(Uritoshare==null)
                     break;
 
-                ConstraintLayout mview=(ConstraintLayout)findViewById(R.id.mainview);
+                ConstraintLayout mview= findViewById(R.id.mainview);
                 photoView.setVisibility(View.VISIBLE);
                 imagebackg.setVisibility(View.VISIBLE);
                 photoView.enable();
@@ -841,6 +888,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
                 break;
+            case R.id.your_dialog_button:
+                view.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                SeekBar yourDialogSeekBar =Lightlayout.findViewById(R.id.your_dialog_seekbar);
+                volumecontrol("亮度设置为|"+String.valueOf(yourDialogSeekBar.getProgress())+"|");
+                System.out.println(String.valueOf(yourDialogSeekBar.getProgress())+"亮度为");
+                break;
             default:
                 break;
 
@@ -876,14 +929,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
-        normalMoreButtonDialog.create().show();
+        AlertDialog dialog = normalMoreButtonDialog.create();
+        dialog.show();
     }//按下删除后弹对话框
     private void deletephotowith(View view){
         deleteUri(this,Uritoshare);
 
-        ImageView imageViewx=(ImageView)findViewById(R.id.imageView3);
+        ImageView imageViewx= findViewById(R.id.imageView3);
         imageViewx.setImageResource(android.R.color.transparent);
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        ImageView imageView = findViewById(R.id.imageView);
         Glide.with(this)
                 .load(R.drawable.daymoren)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)//禁用磁盘缓存
@@ -987,10 +1041,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //oled防烧代码
     @SuppressLint("HandlerLeak")
-    private  Handler handler = new Handler(){
+    private final Handler handler = new Handler(){
         public void handleMessage(Message message){
             Random r = new Random();
-            ConstraintLayout mview=(ConstraintLayout)findViewById(R.id.mainview);
+            ConstraintLayout mview= findViewById(R.id.mainview);
             switch (message.what){
                 case 1:
                     mview.scrollTo( r.nextInt(18)+3,0);
@@ -1033,26 +1087,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.print:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
-                    if(v.getId()==R.id.Fullscreen){
-                    mimagebutton.animate().scaleX(1f).scaleY(1f).setDuration(150).start();}
-                    if(v.getId()==R.id.Topcap){
-                        mimagebutton2.animate().scaleX(1f).scaleY(1f).setDuration(150).start();}
+                    findViewById(v.getId()).animate().scaleX(1f).scaleY(1f).setDuration(200).start();
+                    //findViewById(v.getId()).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                    if(v.getId()==R.id.Fullscreen){
-                        mimagebutton.animate().scaleX(0.9f).scaleY(0.9f).setDuration(150).start();}
-                    if(v.getId()==R.id.Topcap){
-                        mimagebutton2.animate().scaleX(0.9f).scaleY(0.9f).setDuration(150).start();}
-
+                    findViewById(v.getId()).animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).start();
                 }
                 break;
             case R.id.passwordstatue:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    EditText et_password = (EditText)findViewById(R.id.password);
+                    EditText et_password = findViewById(R.id.password);
                     et_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    EditText et_password = (EditText)findViewById(R.id.password);
+                    EditText et_password = findViewById(R.id.password);
                     et_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 }
                 break;
@@ -1061,7 +1109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return false;
     }
-
 
     //自动搜索电脑
     public void udpjieshou(EditText text) {
@@ -1103,7 +1150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //链接测试
     public void connects() {
 
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
         String ip = text1.getText().toString();//murl为文本框内容
         try {
             socket = new DatagramSocket();
@@ -1126,7 +1173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         timer.schedule(task, 3000);//3秒后执行TimeTask的run方法
         try {
             String sendData = "plstes";
-            byte data[] = sendData.getBytes();
+            byte[] data = sendData.getBytes();
             //这里的8888是接收方的端口号
             DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
             socket.send(packet);
@@ -1142,7 +1189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //申请图片
     public void shenqingtupian() {
 
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
 
         String ip = text1.getText().toString();//murl为文本框内容
 
@@ -1171,7 +1218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             String sendData = "shot";
-            byte data[] = sendData.getBytes();
+            byte[] data = sendData.getBytes();
             //这里的8888是接收方的端口号
             DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
             socket.send(packet);
@@ -1186,7 +1233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //申请局部截图
     public void shenqingtupian2() {
 
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
 
         String ip = text1.getText().toString();//murl为文本框内容
 
@@ -1214,7 +1261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             String sendData = "shotwindows";
-            byte data[] = sendData.getBytes();
+            byte[] data = sendData.getBytes();
             //这里的8888是接收方的端口号
             DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
             socket.send(packet);
@@ -1228,9 +1275,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void volumecontrol(String choose)
     {
-        EditText text2 = (EditText) findViewById(R.id.password);
+        EditText text2 = findViewById(R.id.password);
         String passwordnn = text2.getText().toString();//murl为文本框内容
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
         String ip = text1.getText().toString();//murl为文本框内容
         try {
             socket = new DatagramSocket();
@@ -1240,7 +1287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         try {
             String sendData = choose+passwordnn;
-            byte data[] = sendData.getBytes();
+            byte[] data = sendData.getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
             socket.send(packet);
         } catch (Exception e) {
@@ -1252,7 +1299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //ip检测
     public int check() {
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
         String string = text1.getText().toString();//murl为文本框内容
         /*正则表达式*/
         String ip = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
@@ -1276,7 +1323,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 while (true) {
                     try {
-                        String a = new String("abc");
+                        String a = "abc";
                         DatagramSocket dgSocket = null;
                         int port = 21222;
                         dgSocket = new DatagramSocket(null);
@@ -1321,9 +1368,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //历史IP与密码
     public void historyipstore(){
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
         String ipnn = text1.getText().toString();//murl为文本框内容
-        EditText text2 = (EditText) findViewById(R.id.password);
+        EditText text2 = findViewById(R.id.password);
         String passwordnn = text2.getText().toString();//murl为文本框内容
 
         SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -1339,10 +1386,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String ipmm = userInfo.getString("userip", null);//读取username
         String password=userInfo.getString("userpassword", null);
-        EditText text1 = (EditText) findViewById(R.id.PCIP);
+        EditText text1 = findViewById(R.id.PCIP);
         text1.setText(ipmm, TextView.BufferType.NORMAL);
 
-        EditText text2 = (EditText) findViewById(R.id.password);
+        EditText text2 = findViewById(R.id.password);
         text2.setText(password, TextView.BufferType.NORMAL);
 
     }
@@ -1350,9 +1397,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //用aira下载ftp到缓存中
     public void savephotobyaria() {
         canbeclick=false;
-        EditText textBOX = (EditText) findViewById(R.id.password);
+        EditText textBOX = findViewById(R.id.password);
         String password = textBOX.getText().toString();//murl为文本框
-        EditText textBOXip = (EditText) findViewById(R.id.PCIP);
+        EditText textBOXip = findViewById(R.id.PCIP);
         String ipad = textBOXip.getText().toString();//murl为文本框
         //以上为获取两个文本框
         FtpOption ftpOption = new FtpOption();
@@ -1455,7 +1502,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         Toast.makeText(this, "下载完成", Toast.LENGTH_SHORT).show();
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        ImageView imageView = findViewById(R.id.imageView);
         Glide.with(this)
                 .load(URIx)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)//禁用磁盘缓存
@@ -1546,7 +1593,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(inputstatue==false) {
             ConstraintSet set = new ConstraintSet();
-            ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+            ConstraintLayout mlayout = findViewById(R.id.mainview);
             set.clone(mlayout);
             set.setVisibility(R.id.inputarea,ConstraintSet.INVISIBLE);
             set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
@@ -1556,7 +1603,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }else {
             ConstraintSet set = new ConstraintSet();
-            ConstraintLayout mlayout = (ConstraintLayout) findViewById(R.id.mainview);
+            ConstraintLayout mlayout = findViewById(R.id.mainview);
             set.clone(mlayout);
             set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 192, getResources()

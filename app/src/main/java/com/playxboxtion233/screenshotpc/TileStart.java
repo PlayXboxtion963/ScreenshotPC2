@@ -61,7 +61,7 @@ public class TileStart extends TileService {
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();//获取Editor
         if(userInfo.getBoolean("canbetile",true)==false){
-            Toast.makeText(this,"上次还没下载完",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"上次还没下载完(如果卡住了请重新添加快捷方式来刷新)",Toast.LENGTH_LONG).show();
             return;
         }
         editor.putBoolean("canbetile",false);
@@ -73,8 +73,6 @@ public class TileStart extends TileService {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(this, TrueTile.class);
         startActivity(intent);
-
-
     }
 
     public static void collapseStatusBar(Context context) {

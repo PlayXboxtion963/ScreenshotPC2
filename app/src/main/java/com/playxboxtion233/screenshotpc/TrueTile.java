@@ -54,7 +54,7 @@ public class TrueTile extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        toastttt();
+        toastttt(0);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
@@ -243,7 +243,7 @@ public class TrueTile extends AppCompatActivity {
         mNotificationManager.notify(4, builder.build());
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void toastttt()
+    public void toastttt(int progress)
     {
         final String CHANNEL_ID = "channel_id_1";
         final String CHANNEL_NAME = "channel_name_1";
@@ -257,7 +257,17 @@ public class TrueTile extends AppCompatActivity {
                 .setContentTitle("下载中")
                 .setContentText("尝试下载")
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setProgress(100,progress,false)
                 .setSmallIcon(R.drawable.newlogo);
         mNotificationManager.notify(3, builder.build());
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Download.onTaskRunning
+    protected void running(DownloadTask task) {
+        if(task.getTaskName().equals(TASKNAME)==false){
+            return;
+        }
+       toastttt(task.getPercent());
     }
 }

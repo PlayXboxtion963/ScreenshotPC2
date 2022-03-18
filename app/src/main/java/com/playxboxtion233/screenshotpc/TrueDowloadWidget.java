@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ import java.util.TimerTask;
 public class TrueDowloadWidget extends AppCompatActivity {
     private String URIx;
     private String TASKNAME;
+    private Boolean istwiceopen=false;
+    private final String TAG="生命周期观察";
     private static Uri muri=null;
     private DatagramSocket socket = null;
     private InetAddress serverAddress = null;
@@ -55,45 +58,84 @@ public class TrueDowloadWidget extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        moveTaskToBack(true);
         SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-        if(userInfo.getBoolean("canbewidget",true)==false){
-            Toast.makeText(this, "点的太快，上次还没下完哪", Toast.LENGTH_LONG).show();
-            return;
-        }else {
-            editor.putBoolean("canbewidget", false);
-            editor.commit();
-            toastttt();
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-
-            moveTaskToBack(true);
-            Aria.download(this).register();
-            Intent intent = getIntent();
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                mAppWidgetId = extras.getInt(
-                        AppWidgetManager.EXTRA_APPWIDGET_ID,
-                        AppWidgetManager.INVALID_APPWIDGET_ID);
-            }
-
-            shenqingtupian();
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    savephotobyaria();
-                }
-            };
-            Timer timer = new Timer();
-            timer.schedule(task, 990);//3秒后执行TimeTask的run方法
+        System.out.println(userInfo.getBoolean("canbewidget",true)+"小组件允许点击？");
+        super.onCreate(savedInstanceState);
+        moveTaskToBack(true);
+        editor.putBoolean("canbewidget", false);
+        editor.commit();
+        toastttt(0);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        moveTaskToBack(true);
+        Aria.download(this).register();
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            mAppWidgetId = extras.getInt(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
         }
-
+        shenqingtupian();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                savephotobyaria();
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 990);//3秒后执行TimeTask的run方法
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        istwiceopen=true;
+        Log.e(TAG, "restart了");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        System.out.println(userInfo.getBoolean("canbewidget",true)+"小组件允许点击？");
+        if(istwiceopen){
+        if(userInfo.getBoolean("canbewidget",true)==false){
+            Toast.makeText(this, "点的太快，如果卡住请删除小组件来刷新", Toast.LENGTH_SHORT).show();
+            System.out.println("进入了太快判断");
+        }}
+        moveTaskToBack(true);
+        Log.i(TAG, "执行了onResume方法");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "执行了onPause方法");
+        Log.i(TAG, "activity进入了暂停状态");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "执行了onStop方法");
+        Log.i(TAG, "activity进入停止状态");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "执行了onDestory方法");
+        Log.i(TAG, "activity被销毁");
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void toastttt()
+    public void toastttt(int progress)
     {
         final String CHANNEL_ID = "channel_id_1";
         final String CHANNEL_NAME = "channel_name_1";
@@ -107,6 +149,8 @@ public class TrueDowloadWidget extends AppCompatActivity {
                 .setContentTitle("下载中")
                 .setContentText("尝试下载")
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setProgress(100,progress,false)
                 .setSmallIcon(R.drawable.newlogo);
         mNotificationManager.notify(1, builder.build());
     }
@@ -186,7 +230,7 @@ public class TrueDowloadWidget extends AppCompatActivity {
 
         try {
             String sendData = "shot";
-            byte data[] = sendData.getBytes();
+            byte[] data = sendData.getBytes();
             //这里的8888是接收方的端口号
             DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, 21211);   //③
             socket.send(packet);
@@ -299,5 +343,13 @@ public class TrueDowloadWidget extends AppCompatActivity {
         }
         mNotificationManager.cancel(1);
         mNotificationManager.notify(2, builder.build());
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Download.onTaskRunning
+    protected void running(DownloadTask task) {
+        if(task.getTaskName().equals(TASKNAME)==false){
+            return;
+        }
+        toastttt(task.getPercent());
     }
 }

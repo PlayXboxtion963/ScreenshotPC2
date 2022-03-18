@@ -6,23 +6,13 @@
     android:id="@+id/mainview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="6"
-    tools:context="com.playxboxtion233.screenshotpc.MainActivity">
+    tools:context="com.playxboxtion233.screenshotpc.MainActivity"><![CDATA[
 
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:background="#00FF0000"
-        android:elevation="4dp"
-        android:fitsSystemWindows="false"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
 
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
-        tools:layout_editor_absoluteX="1dp" />
+    />
+
+    ]]>
 
     <Button
         android:id="@+id/debug"
@@ -47,6 +37,18 @@
         tools:layout_editor_absoluteY="268dp"
         tools:srcCompat="@tools:sample/avatars"
         tools:visibility="invisible" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="#00FF0000"
+        android:fitsSystemWindows="false"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
+        tools:layout_editor_absoluteX="1dp"></androidx.appcompat.widget.Toolbar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/inputarea"
