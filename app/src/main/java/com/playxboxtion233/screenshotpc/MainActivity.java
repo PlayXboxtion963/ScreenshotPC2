@@ -30,6 +30,7 @@ import android.os.StrictMode;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -51,6 +52,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -105,6 +107,7 @@ import jp.wasabeef.blurry.Blurry;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener {
     private ImageButton btn;
     private String TASKNAME;
+    private int yourheartrate=120;
     private static int buttoncounter=1;
     private static String URIx = null;
     private ImageButton btn_connect;
@@ -162,7 +165,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
         TextView mtext=findViewById(R.id.heartrate);
 
-
+        //清理缓存
+        CacheUtil mcache=new CacheUtil();
+        mcache.clearAllCache(this);
 
         //亮度调节初始化
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -265,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     final EditText inputServer = new EditText(MainActivity.this);
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                    builder1.setTitle("输入MAC地址,手环设置-关于").setIcon(R.drawable.newlogo).setView(inputServer)
+                    builder1.setTitle("输入MAC地址,手环设置-关于").setIcon(R.drawable.newlogo).setView(inputServer).setMessage("打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于目标心率")
                             .setNegativeButton("取消", null);
                     inputServer.setText(userInfo.getString("MAC","FB:35:A2:DE:F5:49"));
                     builder1.setPositiveButton("连接", new DialogInterface.OnClickListener() {
@@ -281,12 +286,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         }
                     });
+
+                    final NumberPicker inputserver3=new NumberPicker(MainActivity.this);
+                    inputserver3.setMaxValue(200);
+                    inputserver3.setMinValue(20);
+                    inputserver3.setValue(130);
+                    inputserver3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                        //当NunberPicker的值发生改变时，将会激发该方法
+                        @Override
+                        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                            getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                        }
+                    });
+                    AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
+                    builder2.setTitle("输入目标心率").setIcon(R.drawable.newlogo).setView(inputserver3)
+                            .setNegativeButton("取消", null);
+                    builder2.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            yourheartrate=inputserver3.getValue();
+                            Toast.makeText(MainActivity.this, "目标心率已设置为"+String.valueOf(yourheartrate), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    builder2.show();
                     builder1.show();
-                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                    Toast.makeText(MainActivity.this,"打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于120",Toast.LENGTH_LONG).show();
-                     break;
+                    break;
                 case R.id.exitx:
                     exit();
                     System.exit(0);
@@ -443,7 +466,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(Integer.valueOf(mblue.getheartrate())>=120){
+                float temp=(float)Integer.valueOf(mblue.getheartrate())/yourheartrate;
+                temp=temp*100;
+                System.out.println(temp);
+                ProgressBar mprocess=findViewById(R.id.heartrateprocess);
+                mprocess.setVisibility(View.VISIBLE);
+                mprocess.setProgress((int)temp);
+                if(Integer.valueOf(mblue.getheartrate())>=yourheartrate){
                     if (check() == 1)
                         return;
                     long currentTime = System.currentTimeMillis();
@@ -573,14 +602,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.search:
                 EditText text1x = findViewById(R.id.PCIP);
                 currentTime = System.currentTimeMillis();
-                if (currentTime-lastClickTime>9000){
+                if (currentTime-lastClickTime>7000){
                     lastClickTime = currentTime;
                 }else{
                     return;
                 }
-
+                mfind.setcontext(MainActivity.this);
                 mfind.Udpreceive();
                 mfind.startsearch();
+
                 progressDialog = ProgressDialog.show(this, "", "搜索中");
                 TimerTask task = new TimerTask() {
                     @Override
@@ -1410,8 +1440,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(mImageTime));
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
-        String Path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + mImageFileName;
-        TASKNAME="Pictures"+mImageFileName;
+        String Path = getExternalCacheDir() + "/"+mImageFileName;
+        System.out.println("新路径"+Path);
+        TASKNAME=mImageFileName;
         long taskId = Aria.download(this)
                 .loadFtp(murl) // 下载地址
                 .option(ftpOption)
@@ -1427,6 +1458,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //安卓10缓存路径转mediastore真正进图库，其实是拷贝私有沙盒路径到公共相册过程
     public static void putBitmapToMedia(Context context, String Path) {
+        System.out.println("执行了进缓存");
         String fileName;
         Long mImageTime = System.currentTimeMillis();
         String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(mImageTime));
@@ -1497,6 +1529,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //下载成功后才开始拷贝缓存和一些任务
     @Download.onTaskComplete
     void taskComplete(DownloadTask task) {
+        System.out.println("主活动1"+task.getTaskName());
         System.out.println("主活动"+TASKNAME);
         if(task.getTaskName().equals(TASKNAME)==false){
             return;

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="0dp"
+    android:background="#00000000"
     android:theme="@style/Theme.ScreenshotPC.AppWidgetContainer">
 
     <ImageView
@@ -11,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
+        android:background="#00000000"
         app:srcCompat="@drawable/daymoren" />
 
     <Button

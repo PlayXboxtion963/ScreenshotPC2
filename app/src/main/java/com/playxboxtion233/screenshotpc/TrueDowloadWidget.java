@@ -16,6 +16,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -168,8 +175,9 @@ public class TrueDowloadWidget extends AppCompatActivity {
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         System.out.println(mImageFileName);
-        String Path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + mImageFileName;
-        TASKNAME="Pictures"+mImageFileName;
+        String Path = getExternalCacheDir() + "/"+mImageFileName;
+        System.out.println("新路径"+Path);
+        TASKNAME=mImageFileName;
         System.out.println(TASKNAME+"DIYIBU");
         long taskId = Aria.download(this)
                 .loadFtp(murl) // 下载地址
@@ -263,12 +271,18 @@ public class TrueDowloadWidget extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        grantUriAccessToWidget(this,muri);
-        views.setImageViewResource(R.id.imageView5,R.drawable.widgetshow);
-        views.setImageViewUri(R.id.imageView5,muri);
+
+
+        Bitmap bitmap=null;
+        try {
+            bitmap= MediaStore.Images.Media.getBitmap(this.getContentResolver(), muri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bitmap=SetRoundCornerBitmap(bitmap,120);
+        //grantUriAccessToWidget(this,uri);
+        views.setImageViewBitmap(R.id.imageView5,bitmap);
         appWidgetManager.updateAppWidget(mAppWidgetId, views);
-
-
         System.out.println(muri);
         cancletoastttt(0);
         Intent resultValue = new Intent();
@@ -281,6 +295,39 @@ public class TrueDowloadWidget extends AppCompatActivity {
         editor.commit();
         finish();
 
+    }
+    public static Bitmap SetRoundCornerBitmap(Bitmap bitmap, float roundPx) {
+        int width = bitmap.getWidth();
+        int heigh = bitmap.getHeight();
+        if(width*heigh*4>15163200)
+        {
+            System.out.println("图片过大");
+            float scaleWidth = ((float) 1920) / width;
+            float scaleHeight = ((float) 1080) / heigh;
+            // 取得想要缩放的matrix参数.
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleWidth, scaleHeight);
+            // 得到新的图片.
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, width,heigh, matrix, true);
+            width=1920;
+            heigh=1080;
+        }
+        // 创建输出bitmap对象
+        Bitmap outmap = Bitmap.createBitmap(width, heigh,
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(outmap);
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, width, heigh);
+        final RectF rectf = new RectF(rect);
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectf, roundPx, roundPx, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return outmap;
     }
     protected void grantUriAccessToWidget(Context context, Uri uri) {
         Intent intent= new Intent(Intent.ACTION_MAIN);

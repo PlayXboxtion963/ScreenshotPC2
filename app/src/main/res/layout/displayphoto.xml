@@ -33,7 +33,7 @@
         android:shadowColor="#FFFFFF"
         android:shadowDx="0"
         android:shadowDy="0"
-        android:shadowRadius="0"
+        android:shadowRadius="3"
         android:textSize="35sp"
         android:textStyle="bold"
         tools:visibility="visible" />
@@ -49,6 +49,19 @@
         android:textSize="30dp"
         android:layout_marginBottom="12dp"
         android:background="@drawable/btnshape"
-        android:text="✔" />
+        android:text="☑" />
+
+    <Button
+        android:id="@+id/randompicture"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@id/imagewidget"
+        android:text="↺"
+        android:layout_marginLeft="80dp"
+        android:alpha="0.6"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/btnshape"/>
 
 </RelativeLayout>

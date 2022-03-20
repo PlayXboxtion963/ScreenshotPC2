@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.playxboxtion233.screenshotpc" >
+    package="com.playxboxtion233.screenshotpc">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
@@ -14,41 +15,41 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <uses-permission
-        android:name="android.permission.READ_LOGS"
-        tools:ignore="ProtectedPermissions" />
-    <!--
- If your app targets Android 9 or lower, you can declare
-         ACCESS_COARSE_LOCATION instead.
-    -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/newlogo"
+        android:icon="@mipmap/layer_icon"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/newlogo"
+        android:roundIcon="@mipmap/layer_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.ScreenshotPC"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".RandomPhotoChoose"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:launchMode="singleInstance"
+            android:exported="false" />
         <activity
             android:name=".TrueTile"
-            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
-            android:exported="false" />
+            android:launchMode="singleInstance"
+            android:exported="false"
+             />
         <activity
             android:name=".TrueDowloadWidget"
-            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleInstance" />
 
         <receiver
             android:name=".DowloadWidgetStart"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -60,13 +61,13 @@
 
         <activity
             android:name=".TrueDisplayWidget"
-            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleInstance" />
 
         <receiver
             android:name=".DisPlayWidgetStart"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -82,19 +83,27 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+        <activity android:name=".shortcuttoalbum"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.test.imfit.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
@@ -105,7 +114,7 @@
             android:exported="true"
             android:icon="@drawable/tilecap"
             android:label="全屏截取"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE" >
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>

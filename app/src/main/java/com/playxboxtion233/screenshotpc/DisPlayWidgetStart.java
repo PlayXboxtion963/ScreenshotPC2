@@ -29,9 +29,13 @@ public class DisPlayWidgetStart extends AppWidgetProvider {
             openApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             openApp.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetIds[i]);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, openApp, PendingIntent.FLAG_UPDATE_CURRENT);
-            // 设置widget的点击事件
             views.setOnClickPendingIntent(R.id.buwigre, pendingIntent);
 
+            Intent randomintent=new Intent(context, RandomPhotoChoose.class);
+            randomintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            randomintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetIds[i]);
+            PendingIntent pendingIntent2 = PendingIntent.getActivity(context, appWidgetId, randomintent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.randompicture, pendingIntent2);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
 

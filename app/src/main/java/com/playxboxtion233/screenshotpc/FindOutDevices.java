@@ -2,11 +2,16 @@ package com.playxboxtion233.screenshotpc;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class FindOutDevices {
@@ -14,17 +19,23 @@ public class FindOutDevices {
     ArrayList<String> nameList = new ArrayList<String>();
     private long currentTime;
     private long lastRunTime;
+    Context context;
     DatagramSocket socket = null;
+    DatagramSocket socket2 = null;
     private AlertDialog signlechoose;
     public String[] temparray=null;
     public String[] namearray=null;
     private boolean isrun=true;
     Thread mthread;
+    Thread sendthread;
     public String[] getiparray(){
        return this.temparray;
     }
     public String[] getNamearray(){
         return this.namearray;
+    }
+    public void setcontext(Context contextx){
+        this.context=contextx;
     }
     public void startsearch(){
         mthread.start();
@@ -41,13 +52,46 @@ public class FindOutDevices {
 
 
     }
+    public static InetAddress getBroadcastAddress(Context context) throws UnknownHostException {
+        WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        DhcpInfo dhcp = wifi.getDhcpInfo();
+        if(dhcp==null) {
+            return InetAddress.getByName("255.255.255.255");
+        }
+        int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
+        byte[] quads = new byte[4];
+        for (int k = 0; k < 4; k++)
+            quads[k] = (byte) ((broadcast >> k * 8) & 0xFF);
+        return InetAddress.getByAddress(quads);
+    }
+
     public void Udpreceive(){
 
             try {
                 socket = new DatagramSocket(9832);
+                socket2=new DatagramSocket();
             } catch (SocketException e) {
                 e.printStackTrace();
             }
+
+        InetAddress ipBroad = null;
+        try {
+            ipBroad = getBroadcastAddress(context);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String sendData = "FindService";
+            byte[] data = sendData.getBytes();
+            DatagramPacket packet = new DatagramPacket(data, data.length, ipBroad, 62231);   //③
+            socket2.send(packet);
+            socket2.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
        mthread=new Thread() {
            public void run() {

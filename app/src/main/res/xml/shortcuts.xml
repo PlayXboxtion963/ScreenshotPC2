@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/album"
+        android:shortcutId="staticId"
+        android:shortcutLongLabel="@string/shortcut1"
+        android:shortcutShortLabel="@string/shortcut1">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.playxboxtion233.screenshotpc.shortcuttoalbum"
+            android:targetPackage="com.playxboxtion233.screenshotpc"
+             />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

@@ -58,7 +58,6 @@ public class TrueTile extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tile_dowloadphoto);
         moveTaskToBack(true);
         Aria.download(this).register();
         shenqingtupian();
@@ -86,8 +85,9 @@ public class TrueTile extends AppCompatActivity {
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         System.out.println(mImageFileName);
-        String Path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + mImageFileName;
-        TASKNAME="Pictures"+mImageFileName;
+        String Path = getExternalCacheDir() + "/"+mImageFileName;
+        System.out.println("新路径"+Path);
+        TASKNAME=mImageFileName;
         System.out.println(TASKNAME+"DIYIBU");
         long taskId = Aria.download(this)
                 .loadFtp(murl) // 下载地址

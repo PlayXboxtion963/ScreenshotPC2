@@ -37,7 +37,7 @@ public class PictureScanner implements MediaScannerConnection.MediaScannerConnec
 
     public void onScanCompleted(String path, Uri uri) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
+        intent.setDataAndType(uri,"image/*");
         context.startActivity(intent);
         mMs.disconnect();
     }

@@ -301,13 +301,14 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginBottom="16dp"
+            android:alpha="0.8"
             android:scaleType="fitXY"
             android:visibility="invisible"
-            android:alpha="0.8"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/heartrate" />
+            app:srcCompat="@drawable/heartrate"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/heartrate"
@@ -375,6 +376,22 @@
             app:layout_constraintTop_toBottomOf="@+id/wallpaper"
             app:layout_constraintVertical_bias="0.506"
             app:srcCompat="@drawable/print" />
+
+        <ProgressBar
+            android:id="@+id/heartrateprocess"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="55dp"
+            android:layout_height="5dp"
+            android:background="#03A9F4"
+            android:max="100"
+            android:progress="20"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintEnd_toEndOf="@+id/imageView4"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintStart_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4"
+            app:layout_constraintVertical_bias="0.975" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
