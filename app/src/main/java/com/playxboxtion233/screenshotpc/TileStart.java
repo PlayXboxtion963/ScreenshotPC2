@@ -53,7 +53,7 @@ public class TileStart extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        collapseStatusBar(this);
+
         if (Build.VERSION.SDK_INT <=29) {
             Toast.makeText(this, "快捷截图暂不支持安卓10以下", Toast.LENGTH_SHORT).show();
             return;
@@ -73,8 +73,8 @@ public class TileStart extends TileService {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(this, TrueTile.class);
         startActivity(intent);
+        collapseStatusBar(this);
     }
-
     public static void collapseStatusBar(Context context) {
         try {
             @SuppressLint("WrongConstant") Object statusBarManager = context.getSystemService("statusbar");
@@ -90,4 +90,5 @@ public class TileStart extends TileService {
             localException.printStackTrace();
         }
     }
+
 }

@@ -146,6 +146,9 @@ public class TrueDowloadWidget extends AppCompatActivity {
     {
         final String CHANNEL_ID = "channel_id_1";
         final String CHANNEL_NAME = "channel_name_1";
+        Intent intent=new Intent(this,cleardowloadstatue.class);
+        intent.putExtra("DowloadPid",android.os.Process.myPid());
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,0);
         NotificationManager mNotificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
@@ -154,9 +157,10 @@ public class TrueDowloadWidget extends AppCompatActivity {
         NotificationCompat.Builder builder= new NotificationCompat.Builder(this,CHANNEL_ID);
         builder
                 .setContentTitle("下载中")
-                .setContentText("尝试下载")
+                .setContentText("点击来取消下载")
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent)
                 .setProgress(100,progress,false)
                 .setSmallIcon(R.drawable.newlogo);
         mNotificationManager.notify(1, builder.build());
@@ -171,7 +175,7 @@ public class TrueDowloadWidget extends AppCompatActivity {
         ftpOption.login("9=n@Yb(thyZ5", password);
         String murl = "ftp://" + ipad + ":23235/tempcap.bmp";//debug阶段，以后可以加上混乱端口
         Long mImageTime = System.currentTimeMillis();
-        String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(mImageTime));
+        String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmssSSS").format(new Date(mImageTime));
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         System.out.println(mImageFileName);
@@ -262,6 +266,7 @@ public class TrueDowloadWidget extends AppCompatActivity {
         RemoteViews views = new RemoteViews(context.getPackageName(),
                 R.layout.widget_dowloadquick);
 
+
         if (Build.VERSION.SDK_INT > 29) {
             putBitmapToMedia(this, URIx);//下载完成后BITMAP拷贝
         }else{
@@ -271,7 +276,10 @@ public class TrueDowloadWidget extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
+        Intent mintent=new Intent(Intent.ACTION_VIEW);
+        mintent.setDataAndType(muri,"image/*");
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, mintent, 0);
+        views.setOnClickPendingIntent(R.id.imageView5,pendingIntent);
 
         Bitmap bitmap=null;
         try {
@@ -279,7 +287,7 @@ public class TrueDowloadWidget extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bitmap=SetRoundCornerBitmap(bitmap,120);
+        bitmap=SetRoundCornerBitmap(bitmap,60);
         //grantUriAccessToWidget(this,uri);
         views.setImageViewBitmap(R.id.imageView5,bitmap);
         appWidgetManager.updateAppWidget(mAppWidgetId, views);

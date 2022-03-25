@@ -30,17 +30,26 @@
         android:theme="@style/Theme.ScreenshotPC"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".PIPcapture"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:supportsPictureInPicture="true"
+            android:exported="false" />
+        <activity
+            android:name=".cleardowloadstatue"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance" />
+        <activity
             android:name=".RandomPhotoChoose"
             android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.NoDisplay"
+            android:exported="false"
             android:launchMode="singleInstance"
-            android:exported="false" />
+            android:theme="@android:style/Theme.NoDisplay" />
         <activity
             android:name=".TrueTile"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
             android:exported="false"
-             />
+            android:launchMode="singleInstance" />
         <activity
             android:name=".TrueDowloadWidget"
             android:excludeFromRecents="true"
@@ -89,15 +98,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity android:name=".shortcuttoalbum"
-            android:exported="true"
-            android:launchMode="singleInstance"
+        <activity
+            android:name=".shortcuttoalbum"
             android:excludeFromRecents="true"
-            />
+            android:exported="true"
+            android:launchMode="singleInstance" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

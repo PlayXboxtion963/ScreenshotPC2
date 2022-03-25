@@ -5,6 +5,7 @@ import androidx.palette.graphics.Palette;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -49,8 +50,6 @@ public class RandomPhotoChoose extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Vibrator vibrator = (Vibrator)this.getSystemService(this.VIBRATOR_SERVICE);
-        vibrator.vibrate(50);
         //setContentView(R.layout.activity_random_photo_choose);
         moveTaskToBack(true);
         Intent intent = getIntent();
@@ -88,11 +87,14 @@ public class RandomPhotoChoose extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bitmap=SetRoundCornerBitmap(bitmap,120);
+        bitmap=SetRoundCornerBitmap(bitmap,60);
         gettextcolor(bitmap,views);
         //grantUriAccessToWidget(this,uri);
         views.setImageViewBitmap(R.id.imagewidget,bitmap);
-
+        Intent mintent=new Intent(Intent.ACTION_VIEW);
+        mintent.setDataAndType(mFile,"image/*");
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, mintent, 0);
+        views.setOnClickPendingIntent(R.id.imagewidget,pendingIntent);
         //views.setImageViewUri(R.id.imagewidget,Uri.parse(""));
         //views.setImageViewUri(R.id.imagewidget,uri);
         appWidgetManager.updateAppWidget(mAppWidgetId, views);
@@ -133,18 +135,26 @@ public class RandomPhotoChoose extends Activity {
     public static Bitmap SetRoundCornerBitmap(Bitmap bitmap, float roundPx) {
         int width = bitmap.getWidth();
         int heigh = bitmap.getHeight();
-        if(width*heigh*4>15163200)
+        if(width*heigh*4>15143200)
         {
+            float widthx=width;
+            while (widthx>1920){
+                widthx=widthx/2;
+            }
+            float higthx=heigh;
+            while (higthx>1080){
+                higthx=higthx/2;
+            }
             System.out.println("图片过大");
-            float scaleWidth = ((float) 1920) / width;
-            float scaleHeight = ((float) 1080) / heigh;
+            float scaleWidth = ((float) widthx) / width;
+            float scaleHeight = ((float)higthx ) / heigh;
             // 取得想要缩放的matrix参数.
             Matrix matrix = new Matrix();
             matrix.postScale(scaleWidth, scaleHeight);
             // 得到新的图片.
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, width,heigh, matrix, true);
-            width=1920;
-            heigh=1080;
+            width=(int) widthx;
+            heigh=(int) higthx;
         }
         // 创建输出bitmap对象
         Bitmap outmap = Bitmap.createBitmap(width, heigh,
@@ -163,6 +173,7 @@ public class RandomPhotoChoose extends Activity {
 
         return outmap;
     }
+
 
     public void gettextcolor(Bitmap bitmap,RemoteViews views){
         Palette palette = Palette.from(bitmap).generate();

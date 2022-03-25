@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -58,6 +60,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -203,7 +206,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //toolbar初始化
         Toolbar mtoolbar= findViewById(R.id.my_toolbar);
         mtoolbar.setTitle(R.string.app_name);
+        mtoolbar.setSubtitle("请先搜索并保存");
         mtoolbar.inflateMenu(R.menu.mymenu);
+        mtoolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+                if(isoled==1){Toast.makeText(MainActivity.this,"OLED下设置无效", Toast.LENGTH_LONG).show();return;}
+                if(yincanginput==true){
+                    inputstatue(false);
+                    yincanginput=false;
+
+                    editor.putBoolean("yincanginput",false);
+
+                }else{//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
+                    inputstatue(true);
+                    yincanginput=true;
+
+                    editor.putBoolean("yincanginput",true);
+                }editor.commit();
+            }
+        });
+
         mtoolbar.setOnMenuItemClickListener(menuItem -> {
             String msg = "";
             SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -213,7 +239,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this,"感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.menu_file:
-                    openPathPhoto("/storage/emulated/0/Pictures/PC");
+                    if(Uritoshare!=null){
+                        Intent intenta = new Intent(Intent.ACTION_ATTACH_DATA);
+                        intenta.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intenta.putExtra("mimeType", "image/*");
+                        if (Uritoshare.toString().startsWith("content://")) {
+                            intenta.setData(Uritoshare);
+                        } else {
+                            try {
+                                intenta.setData(getImageContentUri(this, sharefile));
+                            } catch (Exception e)
+                            {}
+                        }
+                        if(intenta.resolveActivity(getPackageManager()) != null)
+                        {startActivity(intenta);}
+                        else{Toast.makeText(this,"没有图片设置程序", Toast.LENGTH_SHORT).show();}
+//                    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+//                    try {
+//                        wallpaperManager.setBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uritoshare));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+                    }
+
+                    else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
+
                     break;
                 case R.id.menu_pc:
                     Uri urix = Uri.parse("https://gitee.com/dwaedwe12/ScreenshotPC2/releases");
@@ -247,21 +297,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         editor.putBoolean("historyipstatue",false);
                         editor.commit();//提交修改
                     }
-                    break;
-                case R.id.inputstatue:
-                    if(isoled==1){Toast.makeText(MainActivity.this,"OLED下设置无效", Toast.LENGTH_LONG).show();break;}
-                    if(yincanginput==true){
-                        inputstatue(false);
-                        yincanginput=false;
-                        Toast.makeText(MainActivity.this,"隐藏", Toast.LENGTH_LONG).show();
-                        editor.putBoolean("yincanginput",false);
-
-                    }else{//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
-                        inputstatue(true);
-                        yincanginput=true;
-                        Toast.makeText(MainActivity.this,"显示", Toast.LENGTH_LONG).show();
-                        editor.putBoolean("yincanginput",true);
-                    }editor.commit();
                     break;
                 case R.id.miband:
 
@@ -380,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.commit();
         }
         if(userInfo.contains("profile")){
+            mtoolbar.setSubtitle(userInfo.getString("userip","请先搜索并保存"));
             mtoolbar.setTitle(userInfo.getString("profile","懒得截图"));
         }
 
@@ -702,6 +738,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_passwordstatue.setVisibility(View.INVISIBLE);
                     findViewById(R.id.timeTextx).setVisibility(View.VISIBLE);
                     mtoolbar.setTitleTextColor(Color.TRANSPARENT);
+                    mtoolbar.setSubtitleTextColor(Color.TRANSPARENT);
                     text1.setVisibility(View.INVISIBLE);
                     text2.setVisibility(View.INVISIBLE);
                     findViewById(R.id.imageView3).setVisibility(View.INVISIBLE);
@@ -764,11 +801,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                        TransitionManager.beginDelayedTransition(mlayout);
                        set.applyTo(mlayout);}
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     mtoolbar.setTitleTextColor(getColor(R.color.colortext));
-                }else{
-                    mtoolbar.setTitleTextColor(00000000);
-                }
+                    mtoolbar.setSubtitleTextColor(getColor(R.color.colortext));
+
                 timerx.cancel();
                     ConstraintLayout mview= findViewById(R.id.mainview);
                     mview.scrollTo(0,0);
@@ -798,31 +833,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
                 break;
             case R.id.wallpaper:
-
-                if(Uritoshare!=null){
-                    Intent intenta = new Intent(Intent.ACTION_ATTACH_DATA);
-                    intenta.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    intenta.putExtra("mimeType", "image/*");
-                    if (Uritoshare.toString().startsWith("content://")) {
-                        intenta.setData(Uritoshare);
-                    } else {
-                        try {
-                            intenta.setData(getImageContentUri(this, sharefile));
-                        } catch (Exception e)
-                        {}
-                    }
-                if(intenta.resolveActivity(getPackageManager()) != null)
-                {startActivity(intenta);}
-                else{Toast.makeText(this,"没有图片设置程序", Toast.LENGTH_SHORT).show();}
-//                    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-//                    try {
-//                        wallpaperManager.setBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uritoshare));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-}
-
-                else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
+                openPathPhoto("/storage/emulated/0/Pictures/PC");
                 break;
 
             case R.id.imageView:
@@ -909,15 +920,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.print:
-                if(Uritoshare!=null){
-                    try {
-                        doPhotoPrint(MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uritoshare));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
-                break;
+
+                Intent mintent=new Intent();
+                mintent.setClass(this,PIPcapture.class);
+                startActivity(mintent);
+                    break;
             case R.id.your_dialog_button:
                 view.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
                 SeekBar yourDialogSeekBar =Lightlayout.findViewById(R.id.your_dialog_seekbar);
@@ -929,6 +936,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     }
+
+
     private void doPhotoPrint(Bitmap bitmap) {
         PrintHelper photoPrinter = new PrintHelper(this);
         photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
@@ -1042,6 +1051,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mtoolbar.post(new Runnable() {
                     public void run() {
                         mtoolbar.setTitle(namearray[i]);
+                        mtoolbar.setSubtitle(items[i]);
                     }
                 });
 
@@ -1437,7 +1447,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String murl = "ftp://" + ipad + ":23235/tempcap.bmp";//debug阶段，以后可以加上混乱端口
 
         Long mImageTime = System.currentTimeMillis();
-        String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(mImageTime));
+        String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmssSSS").format(new Date(mImageTime));
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         String Path = getExternalCacheDir() + "/"+mImageFileName;

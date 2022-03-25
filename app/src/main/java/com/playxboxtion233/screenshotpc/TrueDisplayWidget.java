@@ -64,12 +64,15 @@ public class TrueDisplayWidget extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                bitmap=SetRoundCornerBitmap(bitmap,120);
-
+                BlurBitmapUtil mblue=new BlurBitmapUtil();
+                //Bitmap blurBitmap = mblue.blurBitmap(this, bitmap, 20);
+                //blurBitmap=SetRoundCornerBitmap(blurBitmap,50);
+                bitmap=SetRoundCornerBitmap(bitmap,60);
                 System.out.println(uri);
                 gettextcolor(bitmap,views);
                 //grantUriAccessToWidget(this,uri);
                 views.setImageViewBitmap(R.id.imagewidget,bitmap);
+                //views.setImageViewBitmap(R.id.widgetback,blurBitmap);
                 //views.setImageViewUri(R.id.imagewidget,Uri.parse(""));
                 //views.setImageViewUri(R.id.imagewidget,uri);
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
@@ -94,18 +97,26 @@ public class TrueDisplayWidget extends AppCompatActivity {
     public static Bitmap SetRoundCornerBitmap(Bitmap bitmap, float roundPx) {
         int width = bitmap.getWidth();
         int heigh = bitmap.getHeight();
-        if(width*heigh*4>15163200)
+        if(width*heigh*4>15143200)
         {
+            float widthx=width;
+            while (widthx>1920){
+                widthx=widthx/2;
+            }
+            float higthx=heigh;
+            while (higthx>1080){
+                higthx=higthx/2;
+            }
             System.out.println("图片过大");
-            float scaleWidth = ((float) 1920) / width;
-            float scaleHeight = ((float) 1080) / heigh;
+            float scaleWidth = ((float) widthx) / width;
+            float scaleHeight = ((float)higthx ) / heigh;
             // 取得想要缩放的matrix参数.
             Matrix matrix = new Matrix();
             matrix.postScale(scaleWidth, scaleHeight);
             // 得到新的图片.
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, width,heigh, matrix, true);
-            width=1920;
-            heigh=1080;
+            width=(int) widthx;
+            heigh=(int) higthx;
         }
         // 创建输出bitmap对象
         Bitmap outmap = Bitmap.createBitmap(width, heigh,
@@ -133,5 +144,6 @@ public class TrueDisplayWidget extends AppCompatActivity {
         System.out.println(String.format("%08x",titleColor).substring(2));
         views.setTextColor(R.id.timeTextx,(int) Long.parseLong(alphaset, 16));
         views.setTextColor(R.id.buwigre,(int) Long.parseLong(alphaset, 16));
+        views.setTextColor(R.id.randompicture,(int) Long.parseLong(alphaset, 16));
     }
 }

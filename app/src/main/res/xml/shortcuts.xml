@@ -13,4 +13,17 @@
              />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/print"
+        android:shortcutId="staticId2"
+        android:shortcutLongLabel="@string/shortcut2"
+        android:shortcutShortLabel="@string/shortcut2">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.playxboxtion233.screenshotpc.PIPcapture"
+            android:targetPackage="com.playxboxtion233.screenshotpc"
+            />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
 </shortcuts>

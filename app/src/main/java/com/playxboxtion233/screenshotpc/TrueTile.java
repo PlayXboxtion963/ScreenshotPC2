@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,6 +36,7 @@ import com.arialyy.aria.util.ALog;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -81,7 +83,7 @@ public class TrueTile extends AppCompatActivity {
         ftpOption.login("9=n@Yb(thyZ5", password);
         String murl = "ftp://" + ipad + ":23235/tempcap.bmp";//debug阶段，以后可以加上混乱端口
         Long mImageTime = System.currentTimeMillis();
-        String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(mImageTime));
+        String imageDate = new SimpleDateFormat("yyyyMMdd-HHmmssSSS").format(new Date(mImageTime));
         String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.bmp";//图片名称，以"Screenshot"+时间戳命名
         String mImageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
         System.out.println(mImageFileName);
@@ -245,6 +247,10 @@ public class TrueTile extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void toastttt(int progress)
     {
+        Intent intent=new Intent(this,cleardowloadstatue.class);
+        System.out.println(android.os.Process.myPid()+"下载pid");
+        intent.putExtra("DowloadPid",android.os.Process.myPid());
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent,0);
         final String CHANNEL_ID = "channel_id_1";
         final String CHANNEL_NAME = "channel_name_1";
         NotificationManager mNotificationManager = (NotificationManager)
@@ -255,12 +261,14 @@ public class TrueTile extends AppCompatActivity {
         NotificationCompat.Builder builder= new NotificationCompat.Builder(this,CHANNEL_ID);
         builder
                 .setContentTitle("下载中")
-                .setContentText("尝试下载")
+                .setContentText("点击来取消下载")
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent)
                 .setProgress(100,progress,false)
                 .setSmallIcon(R.drawable.newlogo);
         mNotificationManager.notify(3, builder.build());
+
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Download.onTaskRunning
@@ -268,6 +276,9 @@ public class TrueTile extends AppCompatActivity {
         if(task.getTaskName().equals(TASKNAME)==false){
             return;
         }
+
        toastttt(task.getPercent());
+
     }
+
 }
