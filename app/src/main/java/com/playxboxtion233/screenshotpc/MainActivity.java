@@ -94,6 +94,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -414,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.putBoolean("yincanginput",false);
             editor.commit();
         }
-        if(userInfo.contains("profile")){
+        if(userInfo.contains("userip")){
             mtoolbar.setSubtitle(userInfo.getString("userip","请先搜索并保存"));
             mtoolbar.setTitle(userInfo.getString("profile","懒得截图"));
         }
@@ -888,15 +889,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 volumecontrol("volumedown");
                 break;
             case R.id.mute:
-                if(ismute==0){ ImageButton mute=findViewById(R.id.mute);
-                mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.unmute));
-                ismute=1;
-                }
-                else if(ismute==1){
-                    ImageButton mute=findViewById(R.id.mute);
-                    mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.mute));
-                    ismute=0;
-                }
                 volumecontrol("mute");
                 break;
             case R.id.nextsound:
@@ -906,17 +898,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 volumecontrol("premusic");
                 break;
             case R.id.pause:
-                if(ispause==0){ ImageButton mute=findViewById(R.id.pause);
-                    mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.play));
                     volumecontrol("pause");
-                    ispause=1;
-                }
-                else if(ispause==1){
-                    ImageButton mute=findViewById(R.id.pause);
-                    volumecontrol("pause");
-                    mute.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.pause));
-                    ispause=0;
-                }
 
                 break;
             case R.id.print:
@@ -1101,11 +1083,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
-
+    boolean isPress;//判断是否在按压
+    long lastTimeStamp=0;//记录按下的时间
+    boolean isPress2;//判断是否在按压
+    long lastTimeStamp2=0;//记录按下的时间
     //马达
     public boolean onTouch(View v, MotionEvent event) {
         ImageButton mimagebutton=findViewById(R.id.Fullscreen);
         ImageButton mimagebutton2=findViewById(R.id.Topcap);
+
+
     if(zhendong) {
         switch (v.getId()) {
             case R.id.search:
@@ -1128,10 +1115,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
                     findViewById(v.getId()).animate().scaleX(1f).scaleY(1f).setDuration(200).start();
+                        isPress=false;
+                        isPress2=false;
                     //findViewById(v.getId()).getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                     findViewById(v.getId()).animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).start();
+                    if(v.getId()==R.id.volumeup){
+                        isPress=true;
+                        lastTimeStamp=System.currentTimeMillis();
+                        //一直执行
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while (isPress){
+                                    //判断按压时间超过300毫秒视为长按
+                                    if((System.currentTimeMillis()-lastTimeStamp)>500){
+                                        volumecontrol("volumeup");
+                                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                                        try {
+                                            Thread.sleep(100);//间隔50毫秒这里决定长按时 执行点击方法的频率
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        }).start();
+                    }
+                    if(v.getId()==R.id.volumedown){
+                        isPress2=true;
+                        lastTimeStamp2=System.currentTimeMillis();
+                        //一直执行
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while (isPress2){
+                                    //判断按压时间超过300毫秒视为长按
+                                    if((System.currentTimeMillis()-lastTimeStamp2)>500){
+                                        volumecontrol("volumedown");
+                                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                                        try {
+                                            Thread.sleep(100);//间隔50毫秒这里决定长按时 执行点击方法的频率
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        }).start();
+                    }
                 }
                 break;
             case R.id.passwordstatue:
@@ -1415,10 +1448,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-
+        Toolbar mtoolbar=findViewById(R.id.my_toolbar);
         //得到Editor后，写入需要保存的数据
         editor.putString("userip", ipnn);
         editor.putString("userpassword",passwordnn);
+        mtoolbar.setSubtitle(ipnn);
         editor.commit();//提交修改
         Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
     }
