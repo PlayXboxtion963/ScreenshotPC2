@@ -23,7 +23,7 @@ public class DowloadWidgetStart extends AppWidgetProvider {
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_dowloadquick);
-        views.setImageViewResource(R.id.imageView5,R.drawable.widgetshow);
+
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -43,7 +43,7 @@ public class DowloadWidgetStart extends AppWidgetProvider {
                 Intent openApp = new Intent(context, TrueDowloadWidget.class);
                 openApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 openApp.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetIds[i]);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, openApp, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, openApp, PendingIntent.FLAG_IMMUTABLE);
                 views.setOnClickPendingIntent(R.id.dowloadwidget, pendingIntent);
                 //更新AppWidget的绑定事件
                 //第一个参数指定绑定到哪一个AppWidget

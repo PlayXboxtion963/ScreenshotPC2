@@ -28,13 +28,13 @@ public class DisPlayWidgetStart extends AppWidgetProvider {
             Intent openApp = new Intent(context, TrueDisplayWidget.class);
             openApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             openApp.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetIds[i]);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, openApp, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, openApp, PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.buwigre, pendingIntent);
 
             Intent randomintent=new Intent(context, RandomPhotoChoose.class);
             randomintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             randomintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetIds[i]);
-            PendingIntent pendingIntent2 = PendingIntent.getActivity(context, appWidgetId, randomintent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent2 = PendingIntent.getActivity(context, appWidgetId, randomintent, PendingIntent.FLAG_IMMUTABLE);
             views.setOnClickPendingIntent(R.id.randompicture, pendingIntent2);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

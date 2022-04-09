@@ -29,11 +29,32 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScreenshotPC"
         android:usesCleartextTraffic="true">
+
+        <receiver
+            android:name=".Volumecontrol"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.screencp.VOLUMEUP"/>
+                <action android:name="con.screencp.VOLUMEDOWN"/>
+                <action android:name="com.screencp.VOLUMEMUTE"/>
+                <action android:name="com.screencp.lastmusic"/>
+                <action android:name="com.screencp.nextmusic"/>
+                <action android:name="com.screencp.pausemusic"/>
+            </intent-filter>
+
+            <meta-data
+
+                android:name="android.appwidget.provider"
+                android:resource="@xml/volumecontrol_info" />
+        </receiver>
+
         <activity
             android:name=".PIPcapture"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:supportsPictureInPicture="true"
-            android:exported="false" />
+            android:exported="false"
+            android:supportsPictureInPicture="true" />
         <activity
             android:name=".cleardowloadstatue"
             android:excludeFromRecents="true"

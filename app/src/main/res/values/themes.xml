@@ -22,14 +22,17 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="CustomSeekbarStyle" >
+    <style name="CustomSeekbarStyle">
         <item name="android:maxHeight">10dp</item>
         <item name="android:indeterminateOnly">false</item>
-        <item name="android:indeterminateDrawable">@color/material_on_background_emphasis_high_type</item>
+        <item name="android:indeterminateDrawable">
+            @color/material_on_background_emphasis_high_type
+        </item>
         <item name="android:progressDrawable">@drawable/seekbardraw</item>
         <item name="android:minHeight">10dp</item>
         <item name="android:thumb">@drawable/lightx</item>
     </style>
+
     <style name="Theme.ScreenshotPC.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
         <!-- Radius of the outer bound of widgets to make the rounded corners -->
         <item name="appWidgetRadius">16dp</item>
