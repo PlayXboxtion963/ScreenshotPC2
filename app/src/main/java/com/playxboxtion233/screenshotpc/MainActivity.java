@@ -21,6 +21,11 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +36,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -57,6 +63,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
+import android.widget.Scroller;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -146,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int ispause=0;
     private View Lightlayout;
     private AlertDialog signlechoose;
+
+
     @SuppressLint("NonConstantResourceId")
     @Override
 
@@ -173,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //清理缓存
         CacheUtil mcache=new CacheUtil();
         mcache.clearAllCache(this);
+
+
 
         //亮度调节初始化
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -236,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String msg = "";
             SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+            FindOutDevices mfind=new FindOutDevices();
+            long currentTime;
             switch (menuItem.getItemId()) {
                 case R.id.menu_login:
                     Toast.makeText(MainActivity.this,"感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
@@ -357,8 +370,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case R.id.light:
                     getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
-
                     yourDialog.show();
+                    break;
+                case R.id.SearchPc:
+                    getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+                    EditText text1x = findViewById(R.id.PCIP);
+                    currentTime = System.currentTimeMillis();
+                    if (currentTime-lastClickTime>7000){
+                        lastClickTime = currentTime;
+                    }else{
+                        break;
+                    }
+                    mfind.setcontext(MainActivity.this);
+                    mfind.Udpreceive();
+                    mfind.startsearch();
+
+                    progressDialog = ProgressDialog.show(this, "", "搜索中");
+                    TimerTask task = new TimerTask() {
+                        @Override
+                        public void run() {
+
+                            progressDialog.dismiss();
+                            String[] array=mfind.getiparray();
+                            String[] namearray=mfind.getNamearray();
+                            mfind.stopsearch();
+                            Looper.prepare();
+                            showSingleAlertDialog(getWindow().getDecorView(),array,namearray,text1x);
+                            Looper.loop();
+
+
+                        }
+                    };
+                    Timer timer = new Timer();
+                    timer.schedule(task, 5000);//3秒后执行TimeTask的run方法
                     break;
                 default:
                     break;
@@ -539,6 +583,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }//心率文本框变化监测
 
 
+
     //这里path就是传的需要浏览指定的文件夹的路径
     public void openPathPhoto(String path) {
         File file = new File(path);
@@ -710,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
                     btn_gif.setVisibility(View.INVISIBLE);
                     btn_connect.setVisibility(View.INVISIBLE);
-                    findViewById(R.id.taskman).setAlpha(0.5f);
+                    findViewById(R.id.SearchPc).setAlpha(0.5f);
                     findViewById(R.id.light).setAlpha(0.5f);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledprint));
@@ -781,7 +826,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_connect.setVisibility(View.VISIBLE);
                     Linout.setBackgroundColor(Color.argb(50, 102, 102, 102));
                     Linout.setAlpha(1F);
-                findViewById(R.id.taskman).setAlpha(1);
+                findViewById(R.id.SearchPc).setAlpha(1);
                 findViewById(R.id.light).setAlpha(1);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.backgrd));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.print));

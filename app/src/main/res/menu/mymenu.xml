@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/taskman" android:title="任务管理器" />
     <item android:id="@+id/menu_file" android:title="将图像设置为壁纸" />
     <item android:id="@+id/menu_pc" android:title="PC端下载链接/更新"/>
     <item android:id="@+id/zhendong" android:title="震动开关切换"/>
@@ -8,17 +9,19 @@
     <item android:id="@+id/miband" android:title="小米手环心率截图"/>
     <item android:id="@+id/menu_login" android:title="关于"/>
     <item android:id="@+id/exitx" android:title="退出"/>
-    <item
-        android:id="@+id/taskman"
-        android:icon="@drawable/ctrl"
-        android:title="任务管理器"
-        android:orderInCategory="90"
-        app:showAsAction="always" />
+
     <item
         android:id="@+id/light"
         android:icon="@drawable/light"
         android:title="亮度+"
         android:orderInCategory="90"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/SearchPc"
+        android:icon="@drawable/search"
+        android:title="搜索PC"
+        android:orderInCategory="90"
+        app:showAsAction="always" />
+
     />
 </menu>
