@@ -17,4 +17,5 @@
     <color name="colortext">#FF000000</color>
     <color name="blurcolor">#70FFFFFF</color>
     <color name="backgroundvolume">#3E666666</color>
+    <color name="inputback">#A15E5A5A</color>
 </resources>

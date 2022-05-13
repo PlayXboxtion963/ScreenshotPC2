@@ -7,12 +7,18 @@
         <entry key="..\:/project/ScreenshotPC2-132789688294cf77f602414c3301252ddb82f19b/app/src/main/res/layout/activity_main2.xml" value="0.20820863616930313" />
         <entry key="..\:/project/ScreenshotPC2-132789688294cf77f602414c3301252ddb82f19b/app/src/main/res/menu/mymenu.xml" value="0.1" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/btnshape.xml" value="0.203" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/buttonareaback.xml" value="0.3395" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/divider.xml" value="0.203" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/fullscr.xml" value="0.3395" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/ic_fullcover.xml" value="0.3395" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/inputeditshape.xml" value="0.2325" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/inputshape.xml" value="0.3355" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/pipcap.xml" value="0.2065" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/seekbardraw.xml" value="0.1545" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/shape.xml" value="0.363" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/drawable/widget_button_shape.xml" value="0.363" />
-        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/activity_layout.xml" value="0.2736212056434374" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/activity_main2.xml" value="0.1" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/activity_photochoose.xml" value="0.1872166817769719" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/activity_pipcapture.xml" value="0.20478837109876016" />
@@ -25,6 +31,7 @@
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/lightbar.xml" value="0.20478837109876016" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/lightseekbar.xml" value="0.6" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/oled.xml" value="0.19220308250226656" />
+        <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/page_recording.xml" value="0.2" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/photoshow.xml" value="0.2" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/recyclerView_item.xml" value="0.19492293744333636" />
         <entry key="..\:/project/ScreenshotPC2/app/src/main/res/layout/volumecontrol.xml" value="0.29713552800342025" />

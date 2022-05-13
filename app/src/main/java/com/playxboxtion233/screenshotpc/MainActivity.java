@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.app.PictureInPictureParams;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,14 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,21 +27,15 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,12 +48,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
-import android.widget.Scroller;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -77,6 +60,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 import androidx.print.PrintHelper;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
@@ -102,10 +87,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -167,7 +153,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Aria.download(this).register();
         verifyStoragePermissions(this);
 
+
         setContentView(R.layout.activity_main);
+
+
         startup();//按钮监听器初始化
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -479,6 +468,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton btn_deleteph= findViewById(R.id.deleteph);
     ImageButton btn_wallpaper= findViewById(R.id.wallpaper);
     ImageButton volumeupbtn=findViewById(R.id.volumeup);
+    ImageButton btn_recording=findViewById(R.id.recoring10s);
+    btn_recording.setOnClickListener(this);
+    btn_recording.setOnTouchListener(this);
     volumeupbtn.setOnClickListener(this);
     ImageButton volumedownbtn=findViewById(R.id.volumedown);
     volumedownbtn.setOnTouchListener(this);
@@ -732,6 +724,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 buttoncounter++;
                 View Linout=findViewById(R.id.volumepart);
+                View buttonquyu=findViewById(R.id.inputlla);
                 ImageButton printbtn=findViewById(R.id.print);
                 ImageButton lbtitle= findViewById(R.id.screenon);
                 ImageButton btn_wallpaper= findViewById(R.id.wallpaper);
@@ -750,14 +743,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     Toast.makeText(this,"屏幕常亮已打开(OLED模式)", Toast.LENGTH_SHORT).show();
                     lbtitle.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledon));
-                    btn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
+                    //btn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
                     btn_history.setVisibility(View.INVISIBLE);
-                    btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
+                    //btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oled));
                     btn_gif.setVisibility(View.INVISIBLE);
                     btn_connect.setVisibility(View.INVISIBLE);
                     findViewById(R.id.SearchPc).setAlpha(0.5f);
                     findViewById(R.id.light).setAlpha(0.5f);
                     imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
+                    imgx.setVisibility(View.INVISIBLE);
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledprint));
                     this.getWindow().setBackgroundDrawable(getDrawable(android.R.color.black));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledshare));
@@ -765,6 +759,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_wallpaper.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledwallpaper));
                     heartback.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledheart));
                     editbutton.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.olededit));
+                    buttonquyu.setBackgroundColor(Color.TRANSPARENT);
                     Linout.setBackgroundColor(Color.TRANSPARENT);
                     Linout.setAlpha(0.6F);
                     isoled=1;
@@ -772,9 +767,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ConstraintLayout mlayout = findViewById(R.id.mainview);
                     set.clone(mlayout);
 
-                    set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
-                            TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
-                                    .getDisplayMetrics()));
+                    set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.inputarea, ConstraintSet.BOTTOM);
                     TransitionManager.beginDelayedTransition(mlayout);
 
 
@@ -819,16 +812,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     Toast.makeText(this,"屏幕常亮已关闭", Toast.LENGTH_SHORT).show();
                     lbtitle.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.offf));
-                    btn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.dayquanpin));
+                    //btn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.dayquanpin));
                     btn_history.setVisibility(View.VISIBLE);
-                    btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.daydingbu));
+                    //btn_shotwindow.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.daydingbu));
                     btn_gif.setVisibility(View.VISIBLE);
                     btn_connect.setVisibility(View.VISIBLE);
                     Linout.setBackgroundColor(Color.argb(50, 102, 102, 102));
+                buttonquyu.setBackgroundColor(Color.argb(50, 102, 102, 102));
                     Linout.setAlpha(1F);
                 findViewById(R.id.SearchPc).setAlpha(1);
                 findViewById(R.id.light).setAlpha(1);
-                    imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.backgrd));
+                imgx.setVisibility(View.VISIBLE);
+                    imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.inputshape));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.print));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deleteph));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.share));
@@ -844,7 +839,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(yincangbiaozhi==true){ConstraintSet set = new ConstraintSet();
                        ConstraintLayout mlayout = findViewById(R.id.mainview);
                        set.clone(mlayout);
-                       set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
+                       set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM);
                        TransitionManager.beginDelayedTransition(mlayout);
                        set.applyTo(mlayout);}
 
@@ -958,6 +953,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 SeekBar yourDialogSeekBar =Lightlayout.findViewById(R.id.your_dialog_seekbar);
                 volumecontrol("亮度设置为|"+String.valueOf(yourDialogSeekBar.getProgress())+"|");
                 System.out.println(String.valueOf(yourDialogSeekBar.getProgress())+"亮度为");
+                break;
+            case R.id.recoring10s:
+                //10s
                 break;
             default:
                 break;
@@ -1158,6 +1156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.presound:
             case R.id.pause:
             case R.id.print:
+            case R.id.recoring10s:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY_RELEASE);
                     findViewById(v.getId()).animate().scaleX(1f).scaleY(1f).setDuration(200).start();
@@ -1719,7 +1718,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ConstraintLayout mlayout = findViewById(R.id.mainview);
             set.clone(mlayout);
             set.setVisibility(R.id.inputarea,ConstraintSet.INVISIBLE);
-            set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM,300);
+            set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.my_toolbar,ConstraintSet.BOTTOM);
+            //set.connect(R.id.imageviewarea,ConstraintSet.BOTTOM,R.id.buttonarea,ConstraintSet.TOP);
             TransitionManager.beginDelayedTransition(mlayout);
             set.applyTo(mlayout);
             yincangbiaozhi=true;
@@ -1728,10 +1728,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ConstraintSet set = new ConstraintSet();
             ConstraintLayout mlayout = findViewById(R.id.mainview);
             set.clone(mlayout);
-            set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
-                            .getDisplayMetrics()));
-
+            //set.connect(R.id.imageviewarea, ConstraintSet.TOP, R.id.my_toolbar, ConstraintSet.BOTTOM, (int) TypedValue.applyDimension(
+                   // TypedValue.COMPLEX_UNIT_DIP, 192, getResources()
+                         //   .getDisplayMetrics()));
+            set.connect(R.id.imageviewarea,ConstraintSet.TOP,R.id.inputarea,ConstraintSet.BOTTOM);
+            //set.connect(R.id.imageviewarea,ConstraintSet.BOTTOM,R.id.buttonarea,ConstraintSet.TOP);
             set.setVisibility(R.id.inputarea, ConstraintSet.VISIBLE);
             TransitionManager.beginDelayedTransition(mlayout);
             set.applyTo(mlayout);
