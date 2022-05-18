@@ -1,0 +1,50 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ScreenshotPC" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/coloractionbar</item>
+        <item name="colorPrimaryVariant">@color/back</item>
+        <item name="colorOnPrimary">@color/coloractionbar</item>
+        <item name="android:textColorPrimary">@color/colortext</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorControlActivated">#FFC107</item>
+        <item name="colorControlNormal">#9C9C9C</item>
+        <item name="android:windowBackground">@color/luse</item>
+        <!-- Customize your theme here. -->
+        <item name="actionMenuTextColor">#D81414</item> <!--menu字体颜色-->
+        <item name="android:windowLightStatusBar" tools:targetApi="m">@string/colortextbar</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="CustomSeekbarStyle">
+        <item name="android:maxHeight">10dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">
+            @color/material_on_background_emphasis_high_type
+        </item>
+        <item name="android:progressDrawable">@drawable/seekbardraw</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:thumb">@drawable/lightx</item>
+    </style>
+
+    <style name="Theme.ScreenshotPC.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <!-- Radius of the outer bound of widgets to make the rounded corners -->
+        <item name="appWidgetRadius">16dp</item>
+        <!--
+        Radius of the inner view's bound of widgets to make the rounded corners.
+        It needs to be 8dp or less than the value of appWidgetRadius
+        -->
+        <item name="appWidgetInnerRadius">8dp</item>
+    </style>
+
+    <style name="Theme.ScreenshotPC.AppWidgetContainer" parent="Theme.ScreenshotPC.AppWidgetContainerParent">
+        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
+        <item name="appWidgetPadding">16dp</item>
+    </style>
+</resources>

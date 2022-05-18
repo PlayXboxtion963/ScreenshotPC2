@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.ScreenshotPC.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00FFFFFF"
+    android:padding="2dp"
+    android:theme="@style/Theme.ScreenshotPC.AppWidgetContainer">
+
+    <ImageView
+        android:id="@+id/widgetback"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/daymoren" />
+
+    <ImageView
+        android:id="@+id/imagewidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+
+    <Button
+        android:id="@+id/buwigre"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignBottom="@id/imagewidget"
+        android:layout_alignRight="@id/imagewidget"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="30dp"
+        android:alpha="0.6"
+        android:background="@android:color/transparent"
+        android:text="↷"
+        android:textColor="@color/black"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/randompicture"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignBottom="@id/imagewidget"
+        android:layout_alignRight="@id/imagewidget"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="30dp"
+        android:alpha="0.6"
+        android:background="@android:color/transparent"
+        android:text="↺"
+        android:textColor="@color/black"
+        android:textSize="30dp" />
+
+</RelativeLayout>

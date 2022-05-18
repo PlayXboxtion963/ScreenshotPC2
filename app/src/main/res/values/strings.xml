@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">懒得截图</string>
+    <string name="zhuangtai">屏幕常亮关</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="colortextbar">true</string>
+    <string name="shortcut1">打开图片目录相册</string>
+    <string name="shortcut2">小窗截图模式</string>
+</resources>

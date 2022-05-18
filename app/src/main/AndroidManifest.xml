@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.playxboxtion233.screenshotpc">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/layer_icon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/layer_icon"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ScreenshotPC"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <receiver
+            android:name=".Volumecontrol"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.screencp.VOLUMEUP" />
+                <action android:name="con.screencp.VOLUMEDOWN" />
+                <action android:name="com.screencp.VOLUMEMUTE" />
+                <action android:name="com.screencp.lastmusic" />
+                <action android:name="com.screencp.nextmusic" />
+                <action android:name="com.screencp.pausemusic" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/volumecontrol_info" />
+        </receiver>
+
+        <activity
+            android:name=".PIPcapture"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
+            android:supportsPictureInPicture="true" />
+        <activity
+            android:name=".cleardowloadstatue"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".RandomPhotoChoose"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.NoDisplay" />
+        <activity
+            android:name=".TrueTile"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".TrueDowloadWidget"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance" />
+
+        <receiver
+            android:name=".DowloadWidgetStart"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_dowloadquick_info" />
+        </receiver>
+
+        <activity
+            android:name=".TrueDisplayWidget"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance" />
+
+        <receiver
+            android:name=".DisPlayWidgetStart"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/displayphoto_info" />
+        </receiver>
+
+        <activity
+            android:name=".DebugActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+
+
+
+        </activity>
+        <activity
+            android:name=".shortcuttoalbum"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleInstance" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.test.imfit.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <service
+            android:name=".TileStart"
+            android:exported="true"
+            android:icon="@drawable/tilecap"
+            android:label="全屏截取"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
+    </application>
+
+</manifest>

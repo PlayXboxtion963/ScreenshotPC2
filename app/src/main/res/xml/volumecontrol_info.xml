@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/app_widget_description"
+    android:initialKeyguardLayout="@layout/volumecontrol"
+    android:initialLayout="@layout/volumecontrol"
+
+    android:minWidth="150dp"
+    android:minHeight="50dp"
+    android:resizeMode="horizontal"
+    android:previewImage="@drawable/volumecon"
+
+    android:previewLayout="@layout/volumecontrol"
+    android:targetCellWidth="4"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen" />

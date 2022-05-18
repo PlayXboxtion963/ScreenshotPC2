@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <color name="luse">#030001</color>
+    <color name="temp" tools:ignore="MissingDefaultResource">#121212</color>
+    <color name="coloractionbar">#FF000000</color>
+    <color name="colortext">#FFFFFF</color>
+    <color name="blurcolor">#66423E3E</color>
+    <color name="inputback">#69E7E1E1</color>
+
+</resources>

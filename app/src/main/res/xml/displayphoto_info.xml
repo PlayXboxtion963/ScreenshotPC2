@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/app_widget_description"
+    android:initialKeyguardLayout="@layout/displayphoto"
+    android:initialLayout="@layout/displayphoto"
+    android:minWidth="100dp"
+    android:minHeight="100dp"
+    android:previewImage="@drawable/daymoren"
+
+    android:previewLayout="@layout/displayphoto"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen" />
