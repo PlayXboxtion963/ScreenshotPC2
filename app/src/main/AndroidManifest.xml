@@ -29,23 +29,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScreenshotPC"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
 
         <receiver
             android:name=".Volumecontrol"
-            android:exported="true"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.screencp.VOLUMEUP"/>
-                <action android:name="con.screencp.VOLUMEDOWN"/>
-                <action android:name="com.screencp.VOLUMEMUTE"/>
-                <action android:name="com.screencp.lastmusic"/>
-                <action android:name="com.screencp.nextmusic"/>
-                <action android:name="com.screencp.pausemusic"/>
+                <action android:name="com.screencp.VOLUMEUP" />
+                <action android:name="con.screencp.VOLUMEDOWN" />
+                <action android:name="com.screencp.VOLUMEMUTE" />
+                <action android:name="com.screencp.lastmusic" />
+                <action android:name="com.screencp.nextmusic" />
+                <action android:name="com.screencp.pausemusic" />
             </intent-filter>
 
             <meta-data
-
                 android:name="android.appwidget.provider"
                 android:resource="@xml/volumecontrol_info" />
         </receiver>
@@ -114,15 +125,9 @@
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+
         </activity>
         <activity
             android:name=".shortcuttoalbum"

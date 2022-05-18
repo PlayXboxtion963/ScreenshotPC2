@@ -53,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
+
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
@@ -628,7 +630,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 currentTime = System.currentTimeMillis();
-                if (currentTime-lastClickTime>1000){
+                if (currentTime-lastClickTime>500){
                     lastClickTime = currentTime;
                 }else{
                     return;
@@ -641,7 +643,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void run() {
                         savephotobyaria();
                     }
-                }, 1000);
+                }, 500);
                 break;
 
             case R.id.storebtn://保存按钮
@@ -725,10 +727,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttoncounter++;
                 View Linout=findViewById(R.id.volumepart);
                 View buttonquyu=findViewById(R.id.inputlla);
+                View inputare=findViewById(R.id.inputarea);
                 ImageButton printbtn=findViewById(R.id.print);
                 ImageButton lbtitle= findViewById(R.id.screenon);
                 ImageButton btn_wallpaper= findViewById(R.id.wallpaper);
-                ImageView imgx= findViewById(R.id.imageView2);
+                //ImageView imgx= findViewById(R.id.imageView2);
                 View decorView = getWindow().getDecorView();
                 WindowManager.LayoutParams windowLP = getWindow().getAttributes();
                 Paint paint = new Paint();
@@ -750,8 +753,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btn_connect.setVisibility(View.INVISIBLE);
                     findViewById(R.id.SearchPc).setAlpha(0.5f);
                     findViewById(R.id.light).setAlpha(0.5f);
-                    imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
-                    imgx.setVisibility(View.INVISIBLE);
+                    //inputare.setVisibility(View.INVISIBLE);
+                    //imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledsave));
+                    //imgx.setVisibility(View.INVISIBLE);
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledprint));
                     this.getWindow().setBackgroundDrawable(getDrawable(android.R.color.black));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.oledshare));
@@ -762,6 +766,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     buttonquyu.setBackgroundColor(Color.TRANSPARENT);
                     Linout.setBackgroundColor(Color.TRANSPARENT);
                     Linout.setAlpha(0.6F);
+                    inputare.setBackgroundColor(Color.TRANSPARENT);
                     isoled=1;
                     ConstraintSet set = new ConstraintSet();
                     ConstraintLayout mlayout = findViewById(R.id.mainview);
@@ -822,8 +827,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Linout.setAlpha(1F);
                 findViewById(R.id.SearchPc).setAlpha(1);
                 findViewById(R.id.light).setAlpha(1);
-                imgx.setVisibility(View.VISIBLE);
-                    imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.inputshape));
+                inputare.setBackgroundColor(Color.argb(50, 102, 102, 102));
+                //imgx.setVisibility(View.VISIBLE);
+                    //imgx.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.inputshape));
                     printbtn.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.print));
                     btn_deleteph.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.deleteph));
                     btn_share.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.share));
@@ -1001,10 +1007,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         deleteUri(this,Uritoshare);
 
         ImageView imageViewx= findViewById(R.id.imageView3);
-        imageViewx.setImageResource(android.R.color.transparent);
+        imageViewx.setImageResource(R.drawable.morenbackground);
         ImageView imageView = findViewById(R.id.imageView);
         Glide.with(this)
-                .load(R.drawable.daymoren)
+                .load(R.drawable.inputeditshape)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)//禁用磁盘缓存
                 .skipMemoryCache(true)//跳过内存缓存
                 .into(imageView);
@@ -1332,7 +1338,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         Timer timer = new Timer();
-        timer.schedule(task, 990);//3秒后执行TimeTask的run方法
+        timer.schedule(task, 490);//3秒后执行TimeTask的run方法
 
         try {
             String sendData = "shot";
@@ -1788,8 +1794,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // 利用handler延迟发送更改状态信息
             mHandlerxxx.sendEmptyMessageDelayed(0, 2000);
         } else {
-            finish();
+
             System.exit(0);
+            finish();
         }
     }
 

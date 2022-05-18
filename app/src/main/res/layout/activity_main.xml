@@ -37,28 +37,15 @@
         android:layout_height="match_parent"
         android:alpha="0.5"
         android:scaleType="centerCrop"
+        app:srcCompat="@drawable/morenbackground"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
-        tools:srcCompat="@tools:sample/avatars"
-        tools:visibility="invisible" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:background="#00FF0000"
-        android:fitsSystemWindows="false"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
-        tools:layout_editor_absoluteX="1dp"></androidx.appcompat.widget.Toolbar>
+        tools:srcCompat="@drawable/morenbackground" />
 
     <TextClock
         android:id="@+id/timeTextx"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
         android:alpha="0.6"
         android:format12Hour="hh:mm:ss"
         android:format24Hour="HH:mm:ss"
@@ -68,37 +55,23 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/imageviewarea"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/inputarea"
         android:layout_width="match_parent"
-        android:layout_height="151dp"
-
-
-        android:padding="10dp"
+        android:layout_height="190dp"
+        android:paddingTop="70dp"
+        android:background="@drawable/buttonareaback"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/imageviewarea"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="0dp"
         tools:visibility="visible">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.6"
-
-            android:background="@drawable/inputeditshape"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.615" />
 
 
         <LinearLayout
@@ -122,22 +95,24 @@
                     android:ems="10"
                     android:hint="输入电脑IP"
                     android:inputType="textPersonName"
-
-                    android:padding="5dp"
+                    android:background="@null"
+                    android:padding="10dp"
                     android:textColor="@color/white"
                     android:textColorHighlight="@color/white"
                     android:textColorHint="@color/white"
                     android:textColorLink="@color/back" />
 
                 <ImageButton
+
                     android:id="@+id/search"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_weight="1"
-                    android:background="#00FF0000"
+                    android:background="@null"
                     android:scaleType="fitCenter"
                     android:visibility="visible"
+
                     app:srcCompat="@drawable/search"
                     tools:visibility="visible" />
 
@@ -162,6 +137,7 @@
                 android:padding="10dp">
 
                 <EditText
+
                     android:id="@+id/password"
                     android:layout_width="172dp"
                     android:layout_height="47dp"
@@ -171,8 +147,8 @@
                     android:hint="输入电脑密码"
                     android:inputType="textPersonName"
 
-
-                    android:padding="5dp"
+                    android:background="@null"
+                    android:padding="10dp"
                     android:textColor="@color/white"
                     android:textColorHighlight="@color/white"
                     android:textColorHint="@color/white"
@@ -184,7 +160,8 @@
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_weight="1"
-                    android:background="#00FF0000"
+                    android:background="@null"
+
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/password" />
 
@@ -204,6 +181,18 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="#00FF0000"
+        android:fitsSystemWindows="false"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
+        tools:layout_editor_absoluteX="1dp"></androidx.appcompat.widget.Toolbar>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/imageviewarea"
         android:layout_width="match_parent"
@@ -221,15 +210,15 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/daymoren"
+            app:srcCompat="@drawable/inputeditshape"
 
-            tools:srcCompat="@drawable/daymoren"
+
             tools:visibility="visible" />
 
         <ImageButton
@@ -399,14 +388,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttonarea"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
 
         app:layout_constraintBottom_toTopOf="@+id/volumepart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
-
+            android:paddingTop="3dp"
             android:id="@+id/inputlla"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -414,31 +403,64 @@
             android:orientation="horizontal"
             >
 
-            <ImageButton
-                android:id="@+id/Fullscreen"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:alpha="0.6"
-                android:background="#00FF0000"
-                android:foreground="@drawable/ic_fullcover"
-                android:foregroundGravity="center"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/fullscr" />
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/Topcap"
-                android:layout_width="wrap_content"
+                <ImageButton
+                    android:id="@+id/Fullscreen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="#00FF0000"
+                    android:foreground="@drawable/ic_fullcover"
+                    android:foregroundGravity="center"
+                    android:padding="7dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/fullscr" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0"
+                    android:text="全屏截取"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:alpha="0.6"
-                android:background="#00FF0000"
-                android:foreground="@drawable/ic_windowscor"
-                android:foregroundGravity="center"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/fullscr" />
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/Topcap"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:alpha="0.6"
+                    android:background="#00FF0000"
+                    android:foreground="@drawable/ic_windowscor"
+                    android:foregroundGravity="center"
+                    android:padding="7dp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/fullscr" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0"
+                    android:text="窗口截取"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
