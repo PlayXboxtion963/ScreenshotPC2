@@ -87,6 +87,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -106,8 +108,8 @@ import jp.wasabeef.blurry.Blurry;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnTouchListener {
     private ImageButton btn;
     private String TASKNAME;
-    private int yourheartrate=120;
-    private static int buttoncounter=1;
+    private int yourheartrate = 120;
+    private static int buttoncounter = 1;
     private static String URIx = null;
     private ImageButton btn_connect;
     private ImageButton btn_shotwindow;
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static long lastClickTime = 0;
     public static long lastClickTime1 = 0;
     private static long lastClickTime2 = 0;
-    long lasttime=0;
+    long lasttime = 0;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
@@ -127,17 +129,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final String PREFS_NAME = "user";
     private boolean zhendong;
     private String Mac;
-    Timer  timerx=new Timer();
-    public  static Uri Uritoshare=null;
-    private File sharefile=null;
+    Timer timerx = new Timer();
+    public static Uri Uritoshare = null;
+    private File sharefile = null;
     private boolean historyipstatue;
-    private  boolean yincanginput;
+    private boolean yincanginput;
     private boolean yincangbiaozhi;
-    private  int isoled=0;
+    private int isoled = 0;
     Bluetoothheart mblue;
-    public boolean canbeclick=true;
-    private int ismute=0;
-    private int ispause=0;
+    public boolean canbeclick = true;
+    private int ismute = 0;
+    private int ispause = 0;
     private View Lightlayout;
     private AlertDialog signlechoose;
 
@@ -161,27 +163,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         startup();//按钮监听器初始化
         Window window = this.getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS| WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         int option;
-        option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN ;
+        option = window.getDecorView().getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         window.getDecorView().setSystemUiVisibility(option);
         window.setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);//将导航栏设置为透明色
-        TextView mtext=findViewById(R.id.heartrate);
+        TextView mtext = findViewById(R.id.heartrate);
 
         //清理缓存
-        CacheUtil mcache=new CacheUtil();
+        CacheUtil mcache = new CacheUtil();
         mcache.clearAllCache(this);
 
 
-
         //亮度调节初始化
-        LayoutInflater inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.lightseekbar, (ViewGroup)findViewById(R.id.elementseek));
-        Button yourDialogButton = (Button)layout.findViewById(R.id.your_dialog_button);
-        SeekBar yourDialogSeekBar =layout.findViewById(R.id.your_dialog_seekbar);
-        TextView lighttext=layout.findViewById(R.id.lighttext);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.lightseekbar, (ViewGroup) findViewById(R.id.elementseek));
+        Button yourDialogButton = (Button) layout.findViewById(R.id.your_dialog_button);
+        SeekBar yourDialogSeekBar = layout.findViewById(R.id.your_dialog_seekbar);
+        TextView lighttext = layout.findViewById(R.id.lighttext);
         Dialog yourDialog = new Dialog(this);
         yourDialog.setContentView(layout);
         SeekBar.OnSeekBarChangeListener yourSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
@@ -200,15 +201,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
                 //add code here
                 layout.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
-                lighttext.setText("亮度设置为:"+String.valueOf(progress));
+                lighttext.setText("亮度设置为:" + String.valueOf(progress));
             }
         };
         yourDialogButton.setOnClickListener(this);
         yourDialogSeekBar.setOnSeekBarChangeListener(yourSeekBarListener);
-        Lightlayout=layout;
+        Lightlayout = layout;
 
         //toolbar初始化
-        Toolbar mtoolbar= findViewById(R.id.my_toolbar);
+        Toolbar mtoolbar = findViewById(R.id.my_toolbar);
         mtoolbar.setTitle(R.string.app_name);
         mtoolbar.setSubtitle("请先搜索并保存");
         mtoolbar.inflateMenu(R.menu.mymenu);
@@ -218,19 +219,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
                 SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-                if(isoled==1){Toast.makeText(MainActivity.this,"OLED下设置无效", Toast.LENGTH_LONG).show();return;}
-                if(yincanginput==true){
+                if (isoled == 1) {
+                    Toast.makeText(MainActivity.this, "OLED下设置无效", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (yincanginput == true) {
                     inputstatue(false);
-                    yincanginput=false;
+                    yincanginput = false;
 
-                    editor.putBoolean("yincanginput",false);
+                    editor.putBoolean("yincanginput", false);
 
-                }else{//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
+                } else {//程序一开始隐藏input等于false，就是不显示，然后你点按钮就让他显示
                     inputstatue(true);
-                    yincanginput=true;
+                    yincanginput = true;
 
-                    editor.putBoolean("yincanginput",true);
-                }editor.commit();
+                    editor.putBoolean("yincanginput", true);
+                }
+                editor.commit();
             }
         });
 
@@ -238,14 +243,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String msg = "";
             SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = userInfo.edit();//获取Editor
-            FindOutDevices mfind=new FindOutDevices();
+            FindOutDevices mfind = new FindOutDevices();
             long currentTime;
             switch (menuItem.getItemId()) {
                 case R.id.menu_login:
-                    Toast.makeText(MainActivity.this,"感谢使用,如果你想捐赠的话就去PC端下载链接捐赠吧,祝你开心愉快", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "感谢使用", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.menu_file:
-                    if(Uritoshare!=null){
+                    if (Uritoshare != null) {
                         Intent intenta = new Intent(Intent.ACTION_ATTACH_DATA);
                         intenta.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         intenta.putExtra("mimeType", "image/*");
@@ -254,21 +259,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             try {
                                 intenta.setData(getImageContentUri(this, sharefile));
-                            } catch (Exception e)
-                            {}
+                            } catch (Exception e) {
+                            }
                         }
-                        if(intenta.resolveActivity(getPackageManager()) != null)
-                        {startActivity(intenta);}
-                        else{Toast.makeText(this,"没有图片设置程序", Toast.LENGTH_SHORT).show();}
+                        if (intenta.resolveActivity(getPackageManager()) != null) {
+                            startActivity(intenta);
+                        } else {
+                            Toast.makeText(this, "没有图片设置程序", Toast.LENGTH_SHORT).show();
+                        }
 //                    WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
 //                    try {
 //                        wallpaperManager.setBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uritoshare));
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
 //                    }
+                    } else {
+                        Toast.makeText(this, "先截图,谢谢", Toast.LENGTH_SHORT).show();
                     }
-
-                    else{Toast.makeText(this,"先截图,谢谢", Toast.LENGTH_SHORT).show();}
 
                     break;
                 case R.id.menu_pc:
@@ -279,56 +286,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case R.id.zhendong:
 
                     //得到Editor后，写入需要保存的数据
-                    if(zhendong==false){
-                        zhendong=true;
-                        Toast.makeText(MainActivity.this,"开", Toast.LENGTH_LONG).show();
-                        editor.putBoolean("zhendong",true);
-                        editor.commit();}//提交修改
-                    else if(zhendong=true){
-                        zhendong=false;
-                        Toast.makeText(MainActivity.this,"关", Toast.LENGTH_LONG).show();
-                        editor.putBoolean("zhendong",false);
+                    if (zhendong == false) {
+                        zhendong = true;
+                        Toast.makeText(MainActivity.this, "开", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("zhendong", true);
+                        editor.commit();
+                    }//提交修改
+                    else if (zhendong = true) {
+                        zhendong = false;
+                        Toast.makeText(MainActivity.this, "关", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("zhendong", false);
                         editor.commit();//提交修改
                     }
                     break;
                 case R.id.autupatch:
-                    if(historyipstatue==false){
-                        historyipstatue=true;
-                        Toast.makeText(MainActivity.this,"开", Toast.LENGTH_LONG).show();
-                        editor.putBoolean("historyipstatue",true);
-                        editor.commit();}//提交修改
-                    else if(historyipstatue=true){
-                        historyipstatue=false;
-                        Toast.makeText(MainActivity.this,"关", Toast.LENGTH_LONG).show();
-                        editor.putBoolean("historyipstatue",false);
+                    if (historyipstatue == false) {
+                        historyipstatue = true;
+                        Toast.makeText(MainActivity.this, "开", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("historyipstatue", true);
+                        editor.commit();
+                    }//提交修改
+                    else if (historyipstatue = true) {
+                        historyipstatue = false;
+                        Toast.makeText(MainActivity.this, "关", Toast.LENGTH_LONG).show();
+                        editor.putBoolean("historyipstatue", false);
                         editor.commit();//提交修改
                     }
                     break;
                 case R.id.miband:
 
-                    ImageView mimageview=findViewById(R.id.imageView4);
+                    ImageView mimageview = findViewById(R.id.imageView4);
 
 
                     final EditText inputServer = new EditText(MainActivity.this);
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
                     builder1.setTitle("输入MAC地址,手环设置-关于").setIcon(R.drawable.newlogo).setView(inputServer).setMessage("打开运动心率广播，手环随便开始个运动，确保小米运动挂在后台,每隔10秒判断心率是否大于目标心率")
                             .setNegativeButton("取消", null);
-                    inputServer.setText(userInfo.getString("MAC","FB:35:A2:DE:F5:49"));
+                    inputServer.setText(userInfo.getString("MAC", "FB:35:A2:DE:F5:49"));
                     builder1.setPositiveButton("连接", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Mac=inputServer.getText().toString();
-                            editor.putString("MAC",Mac);
+                            Mac = inputServer.getText().toString();
+                            editor.putString("MAC", Mac);
                             editor.commit();
-                                mblue.setContext(MainActivity.this);
-                                mblue.setMac(Mac);
-                                mimageview.setVisibility(View.VISIBLE);
-                                mblue.setTextview(mtext);
-                                mblue.startble();
+                            mblue.setContext(MainActivity.this);
+                            mblue.setMac(Mac);
+                            mimageview.setVisibility(View.VISIBLE);
+                            mblue.setTextview(mtext);
+                            mblue.startble();
 
                         }
                     });
 
-                    final NumberPicker inputserver3=new NumberPicker(MainActivity.this);
+                    final NumberPicker inputserver3 = new NumberPicker(MainActivity.this);
                     inputserver3.setMaxValue(200);
                     inputserver3.setMinValue(20);
                     inputserver3.setValue(130);
@@ -344,8 +353,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setNegativeButton("取消", null);
                     builder2.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            yourheartrate=inputserver3.getValue();
-                            Toast.makeText(MainActivity.this, "目标心率已设置为"+String.valueOf(yourheartrate), Toast.LENGTH_SHORT).show();
+                            yourheartrate = inputserver3.getValue();
+                            Toast.makeText(MainActivity.this, "目标心率已设置为" + String.valueOf(yourheartrate), Toast.LENGTH_SHORT).show();
                         }
                     });
                     builder2.show();
@@ -367,9 +376,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     getWindow().getDecorView().performHapticFeedback(HapticFeedbackConstants.CONFIRM);
                     EditText text1x = findViewById(R.id.PCIP);
                     currentTime = System.currentTimeMillis();
-                    if (currentTime-lastClickTime>7000){
+                    if (currentTime - lastClickTime > 2000) {
                         lastClickTime = currentTime;
-                    }else{
+                    } else {
                         break;
                     }
                     mfind.setcontext(MainActivity.this);
@@ -382,18 +391,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         public void run() {
 
                             progressDialog.dismiss();
-                            String[] array=mfind.getiparray();
-                            String[] namearray=mfind.getNamearray();
+                            String[] array = mfind.getiparray();
+                            String[] namearray = mfind.getNamearray();
                             mfind.stopsearch();
                             Looper.prepare();
-                            showSingleAlertDialog(getWindow().getDecorView(),array,namearray,text1x);
+                            showSingleAlertDialog(getWindow().getDecorView(), array, namearray, text1x);
                             Looper.loop();
 
 
                         }
                     };
                     Timer timer = new Timer();
-                    timer.schedule(task, 5000);//3秒后执行TimeTask的run方法
+                    timer.schedule(task, 1900);//3秒后执行TimeTask的run方法
                     break;
                 default:
                     break;
@@ -413,121 +422,122 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = userInfo.edit();
-        if(userInfo.contains("MAC")==false){
-            editor.putString("MAC","FB:35:A2:DE:F5:49");
+        if (userInfo.contains("MAC") == false) {
+            editor.putString("MAC", "FB:35:A2:DE:F5:49");
             editor.commit();
         }
-       Mac=userInfo.getString("MAC","FB:35:A2:DE:F5:49");
+        Mac = userInfo.getString("MAC", "FB:35:A2:DE:F5:49");
 
-        if(userInfo.contains("zhendong")==false){
-                editor.putBoolean("zhendong",true);
-                editor.commit();
+        if (userInfo.contains("zhendong") == false) {
+            editor.putBoolean("zhendong", true);
+            editor.commit();
         }//初次启动，如果震动不存在，给个true
         zhendong = userInfo.getBoolean("zhendong", true);
 ////////////////////////////
 
-        if(userInfo.contains("historyipstatue")==false){
-            editor.putBoolean("zhendong",true);
+        if (userInfo.contains("historyipstatue") == false) {
+            editor.putBoolean("zhendong", true);
             editor.commit();
         }//初次启动，如果不存在，给个true
         historyipstatue = userInfo.getBoolean("historyipstatue", true);
-        if(historyipstatue==true){
+        if (historyipstatue == true) {
             gethisrotyip();
         }
         //////////////////////////////
-        if(userInfo.contains("yincanginput")==false){
-            editor.putBoolean("yincanginput",true);
+        if (userInfo.contains("yincanginput") == false) {
+            editor.putBoolean("yincanginput", true);
             editor.commit();
         }
-        yincanginput=userInfo.getBoolean("yincanginput",true);//true才是显示
-        if(yincanginput==true){
+        yincanginput = userInfo.getBoolean("yincanginput", true);//true才是显示
+        if (yincanginput == true) {
             inputstatue(true);
-            yincanginput=true;
-            editor.putBoolean("yincanginput",true);
+            yincanginput = true;
+            editor.putBoolean("yincanginput", true);
             editor.commit();
-        }else{
+        } else {
             inputstatue(false);
-            yincanginput=false;
-            editor.putBoolean("yincanginput",false);
+            yincanginput = false;
+            editor.putBoolean("yincanginput", false);
             editor.commit();
         }
-        if(userInfo.contains("userip")){
-            mtoolbar.setSubtitle(userInfo.getString("userip","请先搜索并保存"));
-            mtoolbar.setTitle(userInfo.getString("profile","懒得截图"));
+        if (userInfo.contains("userip")) {
+            mtoolbar.setSubtitle(userInfo.getString("userip", "请先搜索并保存"));
+            mtoolbar.setTitle(userInfo.getString("profile", "懒得截图"));
         }
 
     }
-    public void startup(){
-    btn = findViewById(R.id.Fullscreen);
-    btn_connect = findViewById(R.id.storebtn);
-    btn_shotwindow = findViewById(R.id.Topcap);
-    btn_gif= findViewById(R.id.search);
-    btn_history= findViewById(R.id.history);
-    Button btn_debug = findViewById(R.id.debug);
-    ImageButton btn_screenon= findViewById(R.id.screenon);
-    ImageButton btn_passwordstatue = findViewById(R.id.passwordstatue);
-    ImageButton btn_share= findViewById(R.id.share);
-    ImageButton btn_deleteph= findViewById(R.id.deleteph);
-    ImageButton btn_wallpaper= findViewById(R.id.wallpaper);
-    ImageButton volumeupbtn=findViewById(R.id.volumeup);
-    ImageButton btn_recording=findViewById(R.id.recoring10s);
-    btn_recording.setOnClickListener(this);
-    btn_recording.setOnTouchListener(this);
-    volumeupbtn.setOnClickListener(this);
-    ImageButton volumedownbtn=findViewById(R.id.volumedown);
-    volumedownbtn.setOnTouchListener(this);
-    volumeupbtn.setOnTouchListener(this);
-    ImageButton presound=findViewById(R.id.presound);
-    ImageButton nextsound=findViewById(R.id.nextsound);
-    ImageButton pause=findViewById(R.id.pause);
-    presound.setOnTouchListener(this);
-    presound.setOnClickListener(this);
-    nextsound.setOnTouchListener(this);
-    nextsound.setOnClickListener(this);
-    pause.setOnTouchListener(this);
-    pause.setOnClickListener(this);
-    ImageButton mutebtn=findViewById(R.id.mute);
-    mutebtn.setOnClickListener(this);
-    mutebtn.setOnTouchListener(this);
-    volumedownbtn.setOnClickListener(this);
-    PhotoView photoView = findViewById(R.id.img);
-    photoView.setVisibility(View.INVISIBLE);
-    ImageView ImageViewxxx=findViewById(R.id.imgbackgrdx);
-    ImageViewxxx.setVisibility(View.INVISIBLE);
-    ImageViewxxx.setOnClickListener(this);
-    photoView.setOnClickListener(this);
-    ImageView suolue= findViewById(R.id.imageView);
-    ImageButton editbutton=findViewById(R.id.photoedit);
-    editbutton.setOnClickListener(this);
-    editbutton.setOnTouchListener(this);
-    ImageButton printbtn=findViewById(R.id.print);
-    printbtn.setOnClickListener(this);
-    printbtn.setOnTouchListener(this);
-    findViewById(R.id.timeTextx).setVisibility(View.INVISIBLE);
-    suolue.setOnClickListener(this);
-    btn_wallpaper.setOnClickListener(this);
-    btn_wallpaper.setOnTouchListener(this);
-    btn_deleteph.setOnClickListener(this);
-    btn_deleteph.setOnTouchListener(this);
-    btn_share.setOnClickListener(this);
-    btn_share.setOnTouchListener(this);
 
-    btn_screenon.setOnClickListener(this);
-    btn_screenon.setOnTouchListener(this);
-    btn_debug.setOnClickListener(this);
-    btn_passwordstatue.setOnTouchListener(this);
-    btn.setOnClickListener(this);
-    btn.setOnTouchListener(this);
-    btn_connect.setOnClickListener(this);
-    btn_connect.setOnTouchListener(this);
-    btn_shotwindow.setOnClickListener(this);
-    btn_shotwindow.setOnTouchListener(this);
-    btn_gif.setOnClickListener(this);
-    btn_gif.setOnTouchListener(this);
-    btn_history.setOnClickListener(this);
-    btn_history.setOnTouchListener(this);
+    public void startup() {
+        btn = findViewById(R.id.Fullscreen);
+        btn_connect = findViewById(R.id.storebtn);
+        btn_shotwindow = findViewById(R.id.Topcap);
+        btn_gif = findViewById(R.id.search);
+        btn_history = findViewById(R.id.history);
+        Button btn_debug = findViewById(R.id.debug);
+        ImageButton btn_screenon = findViewById(R.id.screenon);
+        ImageButton btn_passwordstatue = findViewById(R.id.passwordstatue);
+        ImageButton btn_share = findViewById(R.id.share);
+        ImageButton btn_deleteph = findViewById(R.id.deleteph);
+        ImageButton btn_wallpaper = findViewById(R.id.wallpaper);
+        ImageButton volumeupbtn = findViewById(R.id.volumeup);
+        ImageButton btn_recording = findViewById(R.id.recoring10s);
+        btn_recording.setOnClickListener(this);
+        btn_recording.setOnTouchListener(this);
+        volumeupbtn.setOnClickListener(this);
+        ImageButton volumedownbtn = findViewById(R.id.volumedown);
+        volumedownbtn.setOnTouchListener(this);
+        volumeupbtn.setOnTouchListener(this);
+        ImageButton presound = findViewById(R.id.presound);
+        ImageButton nextsound = findViewById(R.id.nextsound);
+        ImageButton pause = findViewById(R.id.pause);
+        presound.setOnTouchListener(this);
+        presound.setOnClickListener(this);
+        nextsound.setOnTouchListener(this);
+        nextsound.setOnClickListener(this);
+        pause.setOnTouchListener(this);
+        pause.setOnClickListener(this);
+        ImageButton mutebtn = findViewById(R.id.mute);
+        mutebtn.setOnClickListener(this);
+        mutebtn.setOnTouchListener(this);
+        volumedownbtn.setOnClickListener(this);
+        PhotoView photoView = findViewById(R.id.img);
+        photoView.setVisibility(View.INVISIBLE);
+        ImageView ImageViewxxx = findViewById(R.id.imgbackgrdx);
+        ImageViewxxx.setVisibility(View.INVISIBLE);
+        ImageViewxxx.setOnClickListener(this);
+        photoView.setOnClickListener(this);
+        ImageView suolue = findViewById(R.id.imageView);
+        ImageButton editbutton = findViewById(R.id.photoedit);
+        editbutton.setOnClickListener(this);
+        editbutton.setOnTouchListener(this);
+        ImageButton printbtn = findViewById(R.id.print);
+        printbtn.setOnClickListener(this);
+        printbtn.setOnTouchListener(this);
+        findViewById(R.id.timeTextx).setVisibility(View.INVISIBLE);
+        suolue.setOnClickListener(this);
+        btn_wallpaper.setOnClickListener(this);
+        btn_wallpaper.setOnTouchListener(this);
+        btn_deleteph.setOnClickListener(this);
+        btn_deleteph.setOnTouchListener(this);
+        btn_share.setOnClickListener(this);
+        btn_share.setOnTouchListener(this);
 
-        mblue=new Bluetoothheart();
+        btn_screenon.setOnClickListener(this);
+        btn_screenon.setOnTouchListener(this);
+        btn_debug.setOnClickListener(this);
+        btn_passwordstatue.setOnTouchListener(this);
+        btn.setOnClickListener(this);
+        btn.setOnTouchListener(this);
+        btn_connect.setOnClickListener(this);
+        btn_connect.setOnTouchListener(this);
+        btn_shotwindow.setOnClickListener(this);
+        btn_shotwindow.setOnTouchListener(this);
+        btn_gif.setOnClickListener(this);
+        btn_gif.setOnTouchListener(this);
+        btn_history.setOnClickListener(this);
+        btn_history.setOnTouchListener(this);
+
+        mblue = new Bluetoothheart();
         TextView et = findViewById(R.id.heartrate);
         TextWatcher watcher = new TextWatcher() {
             @Override
@@ -542,25 +552,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable s) {
-                float temp=(float)Integer.valueOf(mblue.getheartrate())/yourheartrate;
-                temp=temp*100;
+                float temp = (float) Integer.valueOf(mblue.getheartrate()) / yourheartrate;
+                temp = temp * 100;
                 System.out.println(temp);
-                ProgressBar mprocess=findViewById(R.id.heartrateprocess);
+                ProgressBar mprocess = findViewById(R.id.heartrateprocess);
                 mprocess.setVisibility(View.VISIBLE);
-                mprocess.setProgress((int)temp);
-                if(Integer.valueOf(mblue.getheartrate())>=yourheartrate){
+                mprocess.setProgress((int) temp);
+                if (Integer.valueOf(mblue.getheartrate()) >= yourheartrate) {
                     if (check() == 1)
                         return;
                     long currentTime = System.currentTimeMillis();
-                    if (currentTime-lastClickTime1>10000){
+                    if (currentTime - lastClickTime1 > 10000) {
                         lastClickTime1 = currentTime;
-                    }else{
+                    } else {
                         return;
                     }
                     shenqingtupian();
-                    Vibrator mVivrator= (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                    Vibrator mVivrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                     long[] pattern = {200, 100};
-                    mVivrator.vibrate(pattern,-1);
+                    mVivrator.vibrate(pattern, -1);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -570,11 +580,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }, 1000);
 
                 }
-                }
+            }
         };
         et.addTextChangedListener(watcher);
 
     }//心率文本框变化监测
+
+
+
+
+
 
 
 
@@ -630,20 +645,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 currentTime = System.currentTimeMillis();
+
                 if (currentTime-lastClickTime>1000){
                     lastClickTime = currentTime;
                 }else{
                     return;
                 }
+
                 if (check() == 1)
                     break;
                 shenqingtupian();
-                new Handler().postDelayed(new Runnable() {
+               /* new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         savephotobyaria();
                     }
-                }, 1000);
+                }, 1000);*/
+                AfterRequest();
                 break;
 
             case R.id.storebtn://保存按钮
@@ -666,12 +684,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (check() == 1)
                     break;
                 shenqingtupian2();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        savephotobyaria();
-                    }
-                }, 1500);
+                AfterRequest();
                 break;
             case R.id.history:
                 gethisrotyip();
@@ -679,7 +692,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.search:
                 EditText text1x = findViewById(R.id.PCIP);
                 currentTime = System.currentTimeMillis();
-                if (currentTime-lastClickTime>7000){
+                if (currentTime-lastClickTime>1800){
                     lastClickTime = currentTime;
                 }else{
                     return;
@@ -705,7 +718,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 };
                 Timer timer = new Timer();
-                timer.schedule(task, 5000);//3秒后执行TimeTask的run方法
+                timer.schedule(task, 1500);//3秒后执行TimeTask的run方法
 
 //                udpjieshou(text1x);
                 break;
@@ -967,6 +980,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
+    }
+
+    public void AfterRequest() {
+        final Boolean[] jieshoudao = {true};
+        final Thread[] mthread = {null};
+        final ServerSocket[] socketx1 = {null};
+        ProgressDialog mprogressDialog = ProgressDialog.show(this, "", "申请中");
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                jieshoudao[0] =false;
+                try {
+                    socketx1[0].close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("关闭弹出");
+                mprogressDialog.dismiss();
+                Looper.prepare();
+
+                Toast.makeText(MainActivity.this, "已经发送截图请求，但是在5秒内未接收到电脑回信截图完毕，请检查连接情况", Toast.LENGTH_LONG).show();
+                Looper.loop();
+            }
+        };
+        timer.schedule(task, 5000);//3秒后执行TimeTask的run方法
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socketx1[0] = new ServerSocket(61123);
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Socket s = socketx1[0].accept();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //接收到消
+                if (jieshoudao[0] ==true) {
+                    System.out.println("接收到UDP，开始下载");
+                    mprogressDialog.dismiss();
+                    timer.cancel();
+                    savephotobyaria();
+                    try {
+                        socketx1[0].close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, 0);
     }
 
 
@@ -1325,21 +1393,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
 
         }
-
-
-        progressDialog = ProgressDialog.show(this, "", "申请中");
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                /**
-                 *要执行的操作
-                 */
-                progressDialog.dismiss();
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(task, 990);//3秒后执行TimeTask的run方法
-
         try {
             String sendData = "shot";
             byte[] data = sendData.getBytes();
@@ -1370,18 +1423,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        progressDialog = ProgressDialog.show(this, "", "申请中");
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                /**
-                 *要执行的操作
-                 */
-                progressDialog.dismiss();
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(task, 1490);//3秒后执行TimeTask的run方法
+
 
         try {
             String sendData = "shotwindows";
@@ -1522,6 +1564,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //用aira下载ftp到缓存中
     public void savephotobyaria() {
         canbeclick=false;
+        System.out.println("执行");
         EditText textBOX = findViewById(R.id.password);
         String password = textBOX.getText().toString();//murl为文本框
         EditText textBOXip = findViewById(R.id.PCIP);

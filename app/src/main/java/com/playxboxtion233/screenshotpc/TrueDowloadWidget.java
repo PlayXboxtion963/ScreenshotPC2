@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,6 +28,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -45,6 +48,8 @@ import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -86,14 +91,7 @@ public class TrueDowloadWidget extends AppCompatActivity {
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
         shenqingtupian();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                savephotobyaria();
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(task, 990);//3秒后执行TimeTask的run方法
+        AfterRequest();
     }
     @Override
     protected void onStart() {
@@ -253,6 +251,65 @@ public class TrueDowloadWidget extends AppCompatActivity {
         }
 
     }
+    public void AfterRequest() {
+        final Boolean[] jieshoudao = {true};
+        final Thread[] mthread = {null};
+        final ServerSocket[] socketx1 = {null};
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void run() {
+                jieshoudao[0] =false;
+                try {
+                    socketx1[0].close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("关闭弹出");
+                cancletoastttt(1);
+
+                SharedPreferences userInfo = getSharedPreferences("user", MODE_PRIVATE);
+                SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+                editor.putBoolean("canbewidget",true);
+                editor.commit();
+                finish();
+
+            }
+        };
+        timer.schedule(task, 5000);//3秒后执行TimeTask的run方法
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socketx1[0] = new ServerSocket(61123);
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Socket s = socketx1[0].accept();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //接收到消
+                if (jieshoudao[0] ==true) {
+                    System.out.println("接收到UDP，开始下载");
+
+                    timer.cancel();
+                    savephotobyaria();
+                    try {
+                        socketx1[0].close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, 0);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Download.onTaskComplete
     void taskComplete(DownloadTask task) {

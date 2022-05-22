@@ -43,7 +43,7 @@ public class FindOutDevices {
     public void stopsearch(){
         mthread.interrupt();
         try {
-            Thread.sleep(500);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -84,7 +84,7 @@ public class FindOutDevices {
         try {
             String sendData = "FindService";
             byte[] data = sendData.getBytes();
-            DatagramPacket packet = new DatagramPacket(data, data.length, ipBroad, 62231);   //③
+            DatagramPacket packet = new DatagramPacket(data, data.length, ipBroad, 58974);   //③
             socket2.send(packet);
             socket2.close();
         } catch (Exception e) {
